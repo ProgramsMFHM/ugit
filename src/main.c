@@ -39,6 +39,17 @@ int main(int argc, char* argv[]){
             break;
         }
     }
+    else if(!strcmp("add\0", argv[1]))
+    {
+        switch (addFiles(argc-2, argv+2))
+        {
+        case 0:
+            printf("No se pudo abrir el archivo de staging\n");
+            break;
+        }
+    }
+    else
+        printf("Comando %s no existe\n", argv[1]);
 
     return 0;
 }
