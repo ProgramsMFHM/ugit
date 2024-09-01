@@ -6,4 +6,4 @@ Proyecto realizado por:
 - Milton Fabricio Hernández
 
 # Tareas Pendientes hasta el momento
-1.
+1. Revisar la duplicación de la última comparación al hacer git add.

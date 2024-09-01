@@ -44,10 +44,15 @@ int main(int argc, char* argv[]){
         switch (addFiles(argc-2, argv+2))
         {
         case 0:
-            printf("No se pudo abrir el archivo de staging\n");
+            printf("No se guardo ningun archivo\n");
+            break;
+        case -1:
+            printf("No existe directorio .ugit, ejecute el comando init.\n");
             break;
         }
     }
+    else if(!strcmp("status\0", argv[1]))
+        stageStatus();
     else
         printf("Comando %s no existe\n", argv[1]);
 

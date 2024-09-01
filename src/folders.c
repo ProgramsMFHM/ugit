@@ -31,6 +31,9 @@ int fileExists(char *fileName){
 /// @param argv Es un arreglo que contiene los nombres de los archivos a agregar.
 /// @return La cantidad de archivos agregados exitosamente.
 int addFiles(int argc, char* argv[]){
+    if(!folderExists(".ugit"))
+        return -1;
+
     int duplicated = 0;
     int cont = 0;
     char fileName[30];
@@ -63,4 +66,23 @@ int addFiles(int argc, char* argv[]){
     }
 
     return cont;
+}
+
+int stageStatus(){
+    if(!folderExists(".ugit"))
+        return -1;
+
+    char filename[30];
+    FILE *stageFILE;
+
+    if ((stageFILE=fopen(".ugit/stagingArea.txt","r+"))==NULL)
+        return 0;
+
+    printf("Los siguientes archivos seran commiteados al usar el comando commit: \n");
+
+
+    while(fscanf(stageFILE, "%s", filename)==1){
+        printf("\t%s\n",filename);
+    }
+    return 0;
 }
