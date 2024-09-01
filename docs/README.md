@@ -5,3 +5,5 @@ Proyecto realizado por:
 - Alan Nicolás Almonacid
 - Milton Fabricio Hernández
 
+# Tareas Pendientes hasta el momento
+1.

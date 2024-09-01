@@ -1,2 +1,5 @@
-./Doxyfile
-./doxy/
+Doxyfile
+doxy/
+build/
+obj/
+.vscode/
