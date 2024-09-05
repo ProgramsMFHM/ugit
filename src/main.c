@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdlib.h>
 #include "folders.h"
+#include "hash.h"
+#include "commit.h"
 #include "user.h"
 
 int init();
@@ -53,6 +54,8 @@ int main(int argc, char* argv[]){
     }
     else if(!strcmp("status\0", argv[1]))
         stageStatus();
+    else if(!strcmp("commit\0", argv[1]))
+        createCommit(argv[2]);
     else
         printf("Comando %s no existe\n", argv[1]);
 
