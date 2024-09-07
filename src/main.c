@@ -5,6 +5,7 @@
 #include "hash.h"
 #include "commit.h"
 #include "user.h"
+#include "errors.h"
 
 int init();
 
@@ -48,7 +49,7 @@ int main(int argc, char* argv[]){
             printf("No se guardo ningun archivo\n");
             break;
         case -1:
-            printf("No existe directorio .ugit, ejecute el comando init.\n");
+            folder_error(".ugit","Se recomienda ejecutar el comando init");
             break;
         }
     }
@@ -68,6 +69,9 @@ int init(){
         return -1;
     // Intentamos crear carpeta
     if(system("mkdir .ugit"))
+        return 0;
+    // Creamos carpeta para comits
+    if(system("mkdir ./.ugit/commits"))
         return 0;
 
     return 1;

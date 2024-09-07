@@ -6,13 +6,14 @@
 #include <time.h>
 #include "user.h"
 #include "hash.h"
+#include "errors.h"
+#include "folders.h"
 
 struct _commitInfo
 {
-    unsigned int hash;
     time_t date;
-    user autor;
     char *message;
+    user autor;
 };
 typedef struct _commitInfo commit;
 

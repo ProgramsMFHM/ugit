@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include "folders.h"
+#include"folders.h"
 
 /// @brief Esta función revisa la existencia de un directorio.
 /// @param folderName Cadena correspondiente al nombre del directorio a comprobar.
