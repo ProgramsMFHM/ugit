@@ -17,5 +17,15 @@ struct _commitInfo
 };
 typedef struct _commitInfo commit;
 
+#include "list.h"
+
+void printCommit(commit commitInfo);
+
 void createCommit(char* message);
+
+void saveCommit(char* filename, commit commitInfo);
+
+int readCommit(FILE* logFile, commit* commitInfo);
+
+int loggingCommits();
 #endif

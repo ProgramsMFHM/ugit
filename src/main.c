@@ -57,6 +57,8 @@ int main(int argc, char* argv[]){
         stageStatus();
     else if(!strcmp("commit\0", argv[1]))
         createCommit(argv[2]);
+    else if(!strcmp("log\0", argv[1]))
+        loggingCommits();
     else
         printf("Comando %s no existe\n", argv[1]);
 
