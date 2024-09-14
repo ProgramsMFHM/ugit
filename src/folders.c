@@ -65,6 +65,8 @@ int addFiles(int argc, char* argv[]){
     return cont;
 }
 
+/// @brief Indica los archivos que están presentes en el StagingArea
+/// @return -1 en caso de que no exista el directorio de .ugit, 0 si todo sale bien
 int stageStatus(){
     if(!folderExists(".ugit"))
         return -1;

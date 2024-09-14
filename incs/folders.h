@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include "folders.h"
 #include <time.h>
 
 int folderExists(char *folderName);
