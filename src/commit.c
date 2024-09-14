@@ -2,8 +2,6 @@
 
 
 void createCommit(char* message){
-    fileStatus("main.c");
-
     if(!message)
         printf("No ingreso un mensaje para el commit");
 
@@ -24,23 +22,28 @@ void createCommit(char* message){
     // Leer línea por línea
     while (fgets(lineBuffer, sizeof(lineBuffer), ugitFILE) != NULL) {
         // Buscar si la línea contiene "Nombre"
-        if (strncmp(lineBuffer, "Nombre =", 8) == 0) {
+        if (strncmp(lineBuffer, "Nombre: ", 8) == 0) {
             // Extraer el valor después del igual
-            sscanf(lineBuffer + 8, "%s", commitInfo.autor.name);
+            if(snprintf(commitInfo.autor.name, nameLenght, "%s", lineBuffer + 8) >= nameLenght)
+                printf("Advertencia: Nombre leido fue truncado por ser demasiado grande.\n\n");
+            trimNewline(commitInfo.autor.name);
         }
         // Buscar si la línea contiene "Mail"
-        else if (strncmp(lineBuffer, "Mail =", 6) == 0) {
+        else if (strncmp(lineBuffer, "Mail: ", 6) == 0) {
             // Extraer el valor después del igual
-            sscanf(lineBuffer + 6, "%s", commitInfo.autor.mail);
+            if(snprintf(commitInfo.autor.mail, mailLenght, "%s", lineBuffer + 6) >= mailLenght)
+                printf("Advertencia: Mail leido fue truncado por ser demasiado grande.\n\n");
+            trimNewline(commitInfo.autor.mail);
         }
     }
 
-    // Fecha a texto:
-    struct tm *local = localtime(&commitInfo.date);  // Convertir a tiempo local
-    char datestring[24];
-    // Formatear la fecha y la hora con la zona horaria
-    strftime(datestring, sizeof(datestring), "%Y-%m-%d %H:%M:%S %Z",local);
+    fclose(ugitFILE);
+
+    // Pasamos fecha a string:
+    char *dateString = dateToLocalString(commitInfo.date);
 
     // Mostramos Commit
-    printf("Se guardara la siguiente informacion:\n\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n", datestring, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
+    printf("Se guardara la siguiente informacion:\n\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n", dateString, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
+
+    free(dateString);
 }

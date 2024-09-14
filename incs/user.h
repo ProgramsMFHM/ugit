@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "folders.h"
+#include "utilities.h"
 
-#define nameLenght 30
-#define mailLenght 32
+#define nameLenght 40
+#define mailLenght 35
 
 typedef struct _user
 {
