@@ -3,14 +3,16 @@
 
 void createCommit(char* message){
     if(!message)
+    {
         printf("No ingreso un mensaje para el commit");
+        return;
+    }
 
     commit commitInfo;
     commitInfo.date = time(NULL);
     commitInfo.message = message;
-    //commitInfo.hash = jenkinsHash((unsigned char*)message, strlen(message));
-    char lineBuffer[100];
 
+    char lineBuffer[100];
     // Buscamos usuario
     FILE *ugitFILE;
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","r"))==NULL)
@@ -39,10 +41,70 @@ void createCommit(char* message){
 
     fclose(ugitFILE);
 
-    printCommit(commitInfo);
+    // Crear carpeta y guardar archivos del commit
+    if(!createCommitDir(commitInfo))
+    {
+        printCommit(commitInfo);
+        saveCommit(".ugit/commits/log.txt", commitInfo);
+    }
+}
+/// @brief Crea un directorio donde se copian los archivos del StagingArea
+/// El directorio creado se almacena en .ugit/commits/<has_del_commit>
+/// @param commitInfo Información del commit a almacenar
+/// @return 1 en caso de error, 0 en caso favorable
+int createCommitDir(commit commitInfo)
+{
+    char dirname[11];
+    char command[150];
+    char lineBuffer[100];
+    snprintf(dirname, 11, "%.10ld", commitInfo.date);
+    sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
 
-    // Guardamos el commit
-    saveCommit(".ugit/commits/log.txt", commitInfo);
+    if(system(command)){
+        printf("No se pudo crear la carpeta %s\n\n", dirname);
+        return 1;
+    }
+
+    FILE *stageFILE;
+
+    if ((stageFILE=fopen(".ugit/stagingArea.txt","r"))==NULL)
+    {
+        file_error(".ugit/stagingArea.txt","");
+        return 1;
+    }
+
+    // Leer línea por línea
+    while (fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL) {
+        trimNewline(lineBuffer);
+        if(fileExists(lineBuffer))
+        {
+            file_error(lineBuffer,"");
+            return 1;
+        }
+
+        sprintf(command, "cp ./%s ./.ugit/commits/%s/", lineBuffer, dirname);
+        if(system(command)){
+            printf("No se pudo guardar el archivo %s\n", lineBuffer);
+            return 1;
+        }
+
+        if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) == NULL) // Saltamos hash del archivo leido
+        {
+            printf("Error al leer el archivo");
+            return 1;
+        }
+    }
+
+    fclose(stageFILE);
+
+    // Borrando el archivo del staging area
+    if ((stageFILE=fopen(".ugit/stagingArea.txt","w"))==NULL)
+    {
+        file_error(".ugit/stagingArea.txt","");
+        return 1;
+    }
+    fclose(stageFILE);
+    return 0;
 }
 
 /// @brief Imprime la informacion de un commit

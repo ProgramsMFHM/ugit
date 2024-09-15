@@ -8,6 +8,7 @@
 #include "hash.h"
 #include "errors.h"
 #include "folders.h"
+#include "utilities.h"
 
 struct _commitInfo
 {
@@ -24,6 +25,8 @@ void printCommit(commit commitInfo);
 void createCommit(char* message);
 
 void saveCommit(char* filename, commit commitInfo);
+
+int createCommitDir(commit commitInfo);
 
 int readCommit(FILE* logFile, commit* commitInfo);
 

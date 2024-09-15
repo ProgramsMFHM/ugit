@@ -13,13 +13,13 @@ int folderExists(char *folderName) {
 
 /// @brief Esta función revisa la existencia de un archivo especifico.
 /// @param fileName Cadena correspondiente al nombre del archivo a comprobar.
-/// @return 1 si el archivo existe, 0 en caso contrario.
+/// @return 0 si el archivo existe, 1 en caso contrario.
 int fileExists(char *fileName){
     struct stat st;
     if (stat(fileName, &st) == 0) {
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 /// @brief Esta función agrega archivos al staging area.
@@ -46,7 +46,7 @@ int addFiles(int argc, char* argv[]){
 
     for(int i=0; i<argc; i++){
         duplicated = 0;
-        if(fileExists(argv[i])){
+        if(!fileExists(argv[i])){
             snprintf(inputhash, 11,"%.10u",hashFile(argv[i]));
 
             // Vemos si el archivo ya fue guardado

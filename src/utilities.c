@@ -6,7 +6,7 @@ void flushInputBuffer(){
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-/// @brief Elimina el caracter de salto de linea de un strng y lo tiene
+/// @brief Elimina el caracter de salto de linea de un strng si lo tiene
 /// @param str Corresponde al string analizado
 void trimNewline(char *str) {
     size_t len = strlen(str);
