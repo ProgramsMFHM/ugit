@@ -7,3 +7,6 @@ Proyecto realizado por:
 
 # Tareas Pendientes hasta el momento
 1. Revisar la duplicación de la última comparación al hacer git add.
+3. Git checkout
+4. Mostrar en el log el último commit y el commit donde está el usuario
+5. Agregar autor y fecha en el main

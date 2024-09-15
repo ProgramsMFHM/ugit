@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
+#include "hash.h"
+#include "errors.h"
 
 int folderExists(char *folderName);
 int fileExists(char *filename);

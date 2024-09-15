@@ -72,6 +72,9 @@ int init(){
     // Intentamos crear carpeta
     if(system("mkdir .ugit"))
         return 0;
+    // Creamos archivo de staging
+    if(system("touch .ugit/stagingArea.txt"))
+        return 0;
     // Creamos carpeta para comits
     if(system("mkdir ./.ugit/commits"))
         return 0;

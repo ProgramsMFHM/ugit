@@ -33,27 +33,48 @@ int addFiles(int argc, char* argv[]){
 
     int duplicated = 0;
     int cont = 0;
-    char fileName[30];
+    char inputhash[11];
+    char lineBuffer[100];
+    long fileposition;
     FILE *stageFILE;
 
-    if ((stageFILE=fopen(".ugit/stagingArea.txt","a+"))==NULL)
+    if ((stageFILE=fopen(".ugit/stagingArea.txt","r+"))==NULL)
+    {
+        file_error(".ugit/stagingArea.txt", "Cree el archivo o ejecute el comando init");
         return 0;
+    }
 
     for(int i=0; i<argc; i++){
+        duplicated = 0;
         if(fileExists(argv[i])){
-            duplicated = 0;
+            snprintf(inputhash, 11,"%.10u",hashFile(argv[i]));
+
+            // Vemos si el archivo ya fue guardado
             rewind(stageFILE);
-            while(!feof(stageFILE) && !duplicated){
-                fscanf(stageFILE, "%s", fileName);
-                if(!strcmp(fileName, argv[i])){
-                    printf("Archivo %s ya esta en el staging area\n", argv[i]);
+
+            // Leer línea por línea
+            while (fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL) {
+                fileposition = ftell(stageFILE);
+                // Buscar si la línea contiene el nombre del archivo
+                if (strncmp(lineBuffer, argv[i], strlen(argv[i])) == 0) {
+                    if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL && !strncmp(inputhash, lineBuffer, 10)) // Leemos la linea de hash
+                    {
+                        printf("El archivo %s no ha recibido un cambio desde que se agrego al staging area\n", argv[i]);
+                    }else{
+                        fseek(stageFILE, fileposition, SEEK_SET);
+                        fprintf(stageFILE, "%s\n", inputhash);
+                        cont++;
+                    }
                     duplicated = 1;
+                    break;
                 }
+                else if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) == NULL) // Saltamos la linea de hash
+                    break;
             }
             if(!duplicated)
             {
                 fseek(stageFILE, 0, SEEK_END);
-                fprintf(stageFILE, "%s\n", argv[i]);
+                fprintf(stageFILE, "%s\n%.10u\n", argv[i], hashFile(argv[i]));
                 printf("Archivo %s agregado con exito\n", argv[i]);
                 cont++;
             }
@@ -82,6 +103,7 @@ int stageStatus(){
 
     while(fscanf(stageFILE, "%s", filename)==1){
         printf("\t%s\n",filename);
+        fseek(stageFILE, 11, SEEK_CUR); // Saltamos el hash correspondiente al archivo filename
     }
     return 0;
 }
