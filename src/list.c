@@ -29,18 +29,18 @@ int IsLast( Position P, List L )
     return P->Next == NULL;
 }
 
-Position Find(time_t X, List L)
+Position Find(unsigned int X, List L)
 {
     Position P;
 
     P = L->Next;
-    while( P != NULL && P->Element.date != X )
+    while( P != NULL && P->Element.ID != X )
         P = P->Next;
 
     return P;
 }
 
-void Delete(time_t X, List L)
+void Delete(unsigned int X, List L)
 {
     Position P, TmpCell;
 
@@ -54,11 +54,11 @@ void Delete(time_t X, List L)
     }
 }
 
-Position FindPrevious( time_t X, List L )
+Position FindPrevious( unsigned int X, List L )
 {
     Position P;
     P = L;
-    while( P->Next != NULL && P->Next->Element.date != X )
+    while( P->Next != NULL && P->Next->Element.ID != X )
         P = P->Next;
     return P;
 }
@@ -85,10 +85,6 @@ void DeleteList( List L )
     while( P != NULL )
     {
         Tmp = P->Next;
-        // Liberamos punteros dentro del nodo
-        free(P->Element.message);
-
-        // Liberamos el nodo
         free( P );
         P = Tmp;
     }

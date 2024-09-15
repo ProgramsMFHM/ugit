@@ -78,6 +78,9 @@ int init(){
     // Creamos carpeta para comits
     if(system("mkdir ./.ugit/commits"))
         return 0;
+    // Creamos archivo de log
+    if(system("touch .ugit/commits/log.txt"))
+        return 0;
 
     return 1;
 }

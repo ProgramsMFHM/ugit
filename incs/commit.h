@@ -10,10 +10,13 @@
 #include "folders.h"
 #include "utilities.h"
 
+#define commitLenght 256
+
 struct _commitInfo
 {
+    unsigned int ID;
     time_t date;
-    char *message;
+    char message[commitLenght];
     user autor;
 };
 typedef struct _commitInfo commit;
@@ -31,4 +34,6 @@ int createCommitDir(commit commitInfo);
 int readCommit(FILE* logFile, commit* commitInfo);
 
 int loggingCommits();
+
+unsigned int nextCommitId();
 #endif

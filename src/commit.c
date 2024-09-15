@@ -7,10 +7,18 @@ void createCommit(char* message){
         printf("No ingreso un mensaje para el commit");
         return;
     }
+    if(strlen(message)>commitLenght)
+    {
+        printf("Mensaje de commit demasiado largo (Limite 256)");
+        return;
+    }
 
     commit commitInfo;
     commitInfo.date = time(NULL);
-    commitInfo.message = message;
+    strcpy(commitInfo.message,message);
+    commitInfo.ID = nextCommitId();
+    if(!commitInfo.ID)
+        commit_error("No se puede asignar ID al commit");
 
     char lineBuffer[100];
     // Buscamos usuario
@@ -44,8 +52,8 @@ void createCommit(char* message){
     // Crear carpeta y guardar archivos del commit
     if(!createCommitDir(commitInfo))
     {
-        printCommit(commitInfo);
         saveCommit(".ugit/commits/log.txt", commitInfo);
+        printCommit(commitInfo);
     }
 }
 /// @brief Crea un directorio donde se copian los archivos del StagingArea
@@ -63,7 +71,7 @@ int createCommitDir(commit commitInfo)
     char dirname[11];
     char command[150];
     char lineBuffer[100];
-    snprintf(dirname, 11, "%.10ld", commitInfo.date);
+    sprintf(dirname, "%u", commitInfo.ID);
     sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
 
     if(system(command)){
@@ -121,7 +129,7 @@ void printCommit(commit commitInfo)
     char *dateString = dateToLocalString(commitInfo.date);
 
     // Mostramos Commit
-    printf("Commit %ld:\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n",commitInfo.date, dateString, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
+    printf("Commit %u:\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n",commitInfo.ID, dateString, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
 
     free(dateString);
 }
@@ -139,17 +147,7 @@ void saveCommit(char* filename, commit commitInfo){
     }
 
     // Guardamos la fecha del commit en el archivo
-    fwrite(&commitInfo.date, sizeof(time_t), 1, logFile);
-
-    // Guardamos al autor
-    fwrite(&commitInfo.autor, sizeof(user), 1, logFile);
-
-    // Guardamos el tamanio del mensaje del commit
-    size_t messageLenght = strlen(commitInfo.message)+1;
-    fwrite(&messageLenght, sizeof(size_t), 1, logFile);
-
-    // Guardamos el mensaje
-    fwrite(commitInfo.message, sizeof(char), messageLenght, logFile);
+    fwrite(&commitInfo, sizeof(commit), 1, logFile);
 
     fclose(logFile);
 }
@@ -157,42 +155,14 @@ void saveCommit(char* filename, commit commitInfo){
 /// @brief Lee el siguiente commit dentro del fichero logFile
 /// @param logFile Puntero a un archivo donde se leerá el commit
 /// @param commitInfo Estructura donde se almacena la información del commit
-/// @return 1 en caso de exito, 0 en caso de error
+/// @return 0 en caso de exito, 1 en caso de error
 /// @note Se espera que logFile esté ya inicializado
 int readCommit(FILE* logFile, commit* commitInfo){
-    // Leemos la fecha del commit
-    if(fread(&(commitInfo->date), sizeof(time_t), 1, logFile) < 1)
+    if(fread(commitInfo, sizeof(commit), 1, logFile) == 0)
     {
-        if(!feof(logFile))
-            // Cuando se llega al fin del archivo y se intenta leer de nuevo una fecha genera error. En este caso solo nos interesa que aparezca por consola si no estamos en el fin del archivo.
-            printf("No se pudo leer la fecha\n");
-        return 0;
+        return 1;
     }
-
-    // Guardamos al autor
-    if(fread(&(commitInfo->autor), sizeof(user), 1, logFile) < 1)
-    {
-        printf("No se pudo leer el autor\n");
-        return 0;
-    }
-
-    // Guardamos el tamanio del mensaje del commit
-    size_t messageLenght;
-    if(fread(&messageLenght, sizeof(size_t), 1, logFile) < 1)
-    {
-        printf("No se pudo leer el tamanio del mensaje\n");
-        return 0;
-    }
-
-    // Guardamos el mensaje
-    commitInfo->message = malloc(messageLenght);
-    if(fread(commitInfo->message, sizeof(char), messageLenght, logFile) < messageLenght)
-    {
-        printf("No se pudo leer el mensaje completo\n");
-        return 0;
-    }
-
-    return -1;
+    return 0;
 }
 
 int loggingCommits(){
@@ -209,8 +179,9 @@ int loggingCommits(){
 
     while(!feof(logFile))
     {
-        if(!readCommit(logFile, &tmpCommit))
-            break;
+        if(readCommit(logFile, &tmpCommit))
+           break;
+
         Insert(tmpCommit, commitLog, Header(commitLog));
     }
 
@@ -221,4 +192,19 @@ int loggingCommits(){
     DeleteList(commitLog);
 
     return -1;
+}
+
+/// @brief Calcula el valor del ID del proximo commit a partir del tamaño del log de commits
+/// @return Próximo ID
+unsigned int nextCommitId()
+{
+    FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
+    if(logFile == NULL)
+    {
+        file_error(".ugit/commits/log.txt","Sería recomendable ejecutar comando init");
+        return -1;
+    }
+
+    fseek(logFile,0,SEEK_END);
+    return (unsigned int)((ftell(logFile)/sizeof(commit))+1);
 }
