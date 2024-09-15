@@ -4,3 +4,4 @@
 void fatal_error(char *error);
 void folder_error(char *folder, char *obs);
 void file_error(char *file, char *obs);
+void commit_error(char *err);

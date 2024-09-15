@@ -91,6 +91,11 @@ int addFiles(int argc, char* argv[]){
 int stageStatus(){
     if(!folderExists(".ugit"))
         return -1;
+    if(hashFile(".ugit/stagingArea.txt")==0)
+    {
+        printf("El StagingArea esta vacio\n");
+        return 1;
+    }
 
     char filename[30];
     FILE *stageFILE;

@@ -21,3 +21,10 @@ void folder_error(char *folder, char *obs){
 void file_error(char *file, char *obs){
     printf("Archivo %s no existe. %s\n", file, obs);
 }
+
+/// @brief Envia un error por consola relacionado con un commit
+/// @param err Mensaje de error
+void commit_error(char *err)
+{
+    printf("Commit Error: %s\n",err);
+}

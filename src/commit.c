@@ -54,6 +54,12 @@ void createCommit(char* message){
 /// @return 1 en caso de error, 0 en caso favorable
 int createCommitDir(commit commitInfo)
 {
+    if(hashFile(".ugit/stagingArea.txt")==0)
+    {
+        commit_error("El StagingArea esta vacio");
+        return 1;
+    }
+
     char dirname[11];
     char command[150];
     char lineBuffer[100];

@@ -10,3 +10,4 @@ Proyecto realizado por:
 3. Git checkout
 4. Mostrar en el log el último commit y el commit donde está el usuario
 5. Agregar autor y fecha en el main
+6. Optimizar errores para que todo error pase por una funcion de errores.h
