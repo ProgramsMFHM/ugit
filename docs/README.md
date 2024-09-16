@@ -6,9 +6,7 @@ Proyecto realizado por:
 - Milton Fabricio Hernández
 
 # Tareas Pendientes hasta el momento
-1. Revisar la duplicación de la última comparación al hacer git add.
-3. Git checkout
-4. Agregar autor y fecha en el main
-5. Optimizar errores para que todo error pase por una funcion de errores.h
-6. Colocar ID completo en los directorios y en el log
-7. Valorar la no necesidad de usar el mainCommitID en la configuración
+1. Agregar autor y fecha en el main
+2. Optimizar errores para que todo error pase por una funcion de errores.h
+3. Colocar ID completo en los directorios y en el log
+4. Al hacer commit se pierde la información no añadida al Staging Area

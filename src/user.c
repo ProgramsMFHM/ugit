@@ -60,7 +60,7 @@ int userConfig(){
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","w+"))==NULL)
         return 0;
 
-    fprintf(ugitFILE,"name: %s\nmail: %s\nmainCommit: %.10u\nheadCommit: %.10u",userInfo.name, userInfo.mail,0,0);
+    fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,0,0);
     fclose(ugitFILE);
     return 1;
 }

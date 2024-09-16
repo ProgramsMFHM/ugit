@@ -37,8 +37,6 @@ int loggingCommits();
 
 unsigned int lastCommitId();
 
-unsigned int mainCommitId(int* position);
-
 unsigned int headCommitId(int* position);
 
 void changeHeadCommit(unsigned int commitID);
