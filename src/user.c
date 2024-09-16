@@ -1,67 +1,58 @@
+/// \file user.c
+/// \brief Funciones al respecto de la creación de un usuario dentro del Ugit
 #include "user.h"
 
-int userConfig(){
+/// @brief Inicializa el archivo de configuración del Ugit
+void userConfig()
+{
     if(!folderExists(".ugit"))
-        return -1;
+    {
+        printError(101, ".ugit", "Ejecute el comando init");
+        return;
+    }
 
     user userInfo;
-
-    while(1) // Se rompera al ver entrada valida
-    {
-        printf("Ingrese su nombre de usuario (%d caracteres): ",nameLenght-1);
-
-        if(fgets(userInfo.name, nameLenght, stdin) != NULL) // Leemos entrada del usuario
-        {
-            if ((strlen(userInfo.name) > 0) && (userInfo.name[strlen(userInfo.name) - 1] == '\n'))
-            {
-                // En caso de entrar significa que se leyo un salto de linea al final. Entrada valida
-                userInfo.name[strlen(userInfo.name) - 1] = '\0';
-                break; // Entrada valida termina el bucle
-            }
-            else
-            {
-                flushInputBuffer();
-                printError(119, NULL, NULL);
-            }
-        }
-        else
-        {
-            flushInputBuffer();
-            printError(120, NULL, NULL);
-        }
-    }
-
-    while(1) // Se rompera al ver entrada valida
-    {
-        printf("Ingrese su correo electrónico de usuario (%d caracteres): ",mailLenght-1);
-
-        if(fgets(userInfo.mail, mailLenght, stdin) != NULL) // Leemos entrada del usuario
-        {
-            if ((strlen(userInfo.mail) > 0) && (userInfo.mail[strlen(userInfo.mail) - 1] == '\n'))
-            {
-                // En caso de entrar significa que se leyo un salto de linea al final. Entrada valida
-                userInfo.mail[strlen(userInfo.mail) - 1] = '\0';
-                break; // Entrada valida termina el bucle
-            }
-            else
-            {
-                flushInputBuffer();
-                printError(119, NULL, NULL);
-            }
-        }
-        else
-        {
-            flushInputBuffer();
-            printError(120, NULL, NULL);
-        }
-    }
+    getInfo(nameLenght, userInfo.name, "nombre");
+    getInfo(mailLenght, userInfo.mail, "mail");
 
     FILE *ugitFILE;
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","w+"))==NULL)
-        return 0;
+    {
+        printError(114, NULL, NULL);
+        return;
+    }
 
     fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,0);
     fclose(ugitFILE);
-    return 1;
+    printf("Usuario iniciado almacenado con exito.\n");
 }
 
+/// @brief Pide un recurso del usuario especifico para posteriormentte guardarlo
+/// @param lenght Tamaño máximo del recurso
+/// @param dest Cadena destino donde se almacenará el recurso
+/// @param message Nombre del recurso
+void getInfo(int lenght, char* dest, char* message){
+    while(1) // Se rompera al ver entrada valida
+    {
+        printf("Ingrese su %s (%d caracteres): ",message, lenght-1);
+
+        if(fgets(dest, lenght, stdin) != NULL) // Leemos entrada del usuario
+        {
+            if ((strlen(dest) > 0) && (dest[strlen(dest) - 1] == '\n'))
+            { // En caso de entrar significa que se leyo un salto de linea al final. Entrada valida
+                trimNewline(dest);
+                break; // Entrada valida termina el bucle
+            }
+            else
+            {
+                flushInputBuffer();
+                printError(119, NULL, NULL);
+            }
+        }
+        else
+        {
+            flushInputBuffer();
+            printError(120, NULL, NULL);
+        }
+    }
+}

@@ -1,3 +1,5 @@
+/// \file hash.h
+/// \brief Cabecera para hash.c
 #ifndef HASH
 #define HASH
 #include <stdio.h>

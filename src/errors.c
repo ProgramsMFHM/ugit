@@ -1,3 +1,5 @@
+/// \file errors.c
+/// \brief Manejo de errores
 #include "errors.h"
 
 /// @brief Envía un mensaje de error por consola

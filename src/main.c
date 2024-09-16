@@ -1,50 +1,24 @@
 /// \file main.c
 /// \author Alan Almonacid y Milton Hernández
 /// \date 25 de Septiembre del 2024
-/// \brief Archivo principal para el proyecto.
+/// \brief Archivo principal para el proyecto Ugit.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "commit.h"
+#include "errors.h"
 #include "folders.h"
 #include "hash.h"
-#include "commit.h"
 #include "user.h"
-#include "errors.h"
 
-int init();
+void init();
 
-int main(int argc, char* argv[]){
-
+int main(int argc, char* argv[])
+{
     if(!strcmp("init\0", argv[1]))
-    {
-        switch (init())
-        {
-        case 1:
-            printf("Carpeta .ugit creada con exito\n");
-            break;
-        case 0:
-            printError(113, ".ugit", NULL);
-            break;
-        case -1:
-            printError(103, NULL, NULL);
-            break;
-        }
-    }
+        init();
     else if(!strcmp("config\0", argv[1]))
-    {
-        switch (userConfig())
-        {
-        case 1:
-            printf("Usuario iniciado almacenado con exito.\n");
-            break;
-        case 0:
-            printError(114, NULL, NULL);
-            break;
-        case -1:
-            printError(101, ".ugit", "Ejecute el comando init");
-            break;
-        }
-    }
+        userConfig();
     else if(!strcmp("add\0", argv[1]))
     {
         switch (addFiles(argc-2, argv+2))
@@ -71,22 +45,38 @@ int main(int argc, char* argv[]){
     return 0;
 }
 
-int init(){
+void init()
+{
     // Probamos si la carpeta de ugit existe
     if(folderExists(".ugit"))
-        return -1;
+    {
+        printError(103, NULL, NULL);
+        return;
+    }
     // Intentamos crear carpeta
     if(system("mkdir .ugit"))
-        return 0;
+    {
+        printError(113, ".ugit", NULL);
+        return;
+    }
     // Creamos archivo de staging
     if(system("touch .ugit/stagingArea.txt"))
-        return 0;
+    {
+        printError(113, ".ugit", NULL);
+        return;
+    }
     // Creamos carpeta para comits
     if(system("mkdir ./.ugit/commits"))
-        return 0;
+    {
+        printError(113, ".ugit", NULL);
+        return;
+    }
     // Creamos archivo de log
     if(system("touch .ugit/commits/log.txt"))
-        return 0;
+    {
+        printError(113, ".ugit", NULL);
+        return;
+    }
 
-    return 1;
+    printf("Carpeta .ugit creada con exito\n");
 }

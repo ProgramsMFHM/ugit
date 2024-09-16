@@ -1,3 +1,5 @@
+/// \file folders.h
+/// \brief Cabecera para folders.c
 #ifndef FOLDERS
 #define FOLDERS
 #include <stdio.h>
@@ -12,6 +14,6 @@ int fileExists(char *filename);
 
 int addFiles(int argc, char* argv[]);
 
-int stageStatus();
+void stageStatus();
 
 #endif

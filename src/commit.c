@@ -1,6 +1,9 @@
+/// \file commit.c
+/// \brief Funciones relacionadas con Commit, Log y Checkout.
 #include "commit.h"
 
-
+/// @brief Gestiona la creación de un commit a partir de un mensaje
+/// @param message Cadena que contiene el mensaje correspondiente al commit
 void createCommit(char* message){
     if(!message)
     {
@@ -12,6 +15,7 @@ void createCommit(char* message){
         printError(106, NULL, NULL);
         return;
     }
+    char lineBuffer[100];
 
     commit commitInfo;
     commitInfo.date = time(NULL);
@@ -20,7 +24,6 @@ void createCommit(char* message){
     if(!commitInfo.ID)
         printError(107, NULL, NULL);
 
-    char lineBuffer[100];
     // Buscamos usuario
     FILE *ugitFILE;
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","r"))==NULL)
@@ -30,23 +33,25 @@ void createCommit(char* message){
     }
 
     // Leer línea por línea
-    while (fgets(lineBuffer, sizeof(lineBuffer), ugitFILE) != NULL) {
+    while (fgets(lineBuffer, sizeof(lineBuffer), ugitFILE) != NULL)
+    {
         // Buscar si la línea contiene "Nombre"
-        if (strncmp(lineBuffer, "name: ", 6) == 0) {
+        if (strncmp(lineBuffer, "name: ", 6) == 0)
+        {
             // Extraer el valor después del igual
             if(snprintf(commitInfo.autor.name, nameLenght, "%s", lineBuffer + 6) >= nameLenght)
                 printError(301, "nombre", NULL);
             trimNewline(commitInfo.autor.name);
         }
         // Buscar si la línea contiene "Mail"
-        else if (strncmp(lineBuffer, "mail: ", 6) == 0) {
+        else if (strncmp(lineBuffer, "mail: ", 6) == 0)
+        {
             // Extraer el valor después del igual
             if(snprintf(commitInfo.autor.mail, mailLenght, "%s", lineBuffer + 6) >= mailLenght)
                 printError(301, "correo", NULL);
             trimNewline(commitInfo.autor.mail);
         }
     }
-
     fclose(ugitFILE);
 
     // Crear carpeta y guardar archivos del commit
@@ -56,8 +61,9 @@ void createCommit(char* message){
         printCommit(commitInfo);
     }
 }
-/// @brief Crea un directorio donde se copian los archivos del StagingArea
-/// El directorio creado se almacena en .ugit/commits/<has_del_commit>
+
+/// @brief Crea un directorio donde se copian los archivos del StagingArea y archivos no modificados desde el último commit
+/// El directorio creado se almacena en .ugit/commits/<ID_del_commit>
 /// @param commitInfo Información del commit a almacenar
 /// @return 1 en caso de error, 0 en caso favorable
 int createCommitDir(commit commitInfo)
@@ -75,21 +81,21 @@ int createCommitDir(commit commitInfo)
     sprintf(dirname, "%u", commitInfo.ID);
     sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
 
-    if(system(command)){
+    if(system(command))
+    {
         printError(113, dirname, NULL);
         return 1;
     }
 
     FILE *stageFILE;
-
     if ((stageFILE=fopen(".ugit/stagingArea.txt","r"))==NULL)
     {
         printError(100, ".ugit/stagingArea.txt", NULL);
         return 1;
     }
-
     // Leer línea por línea
-    while (fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL) {
+    while (fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL)
+    {
         trimNewline(lineBuffer);
         if(fileExists(lineBuffer))
         {
@@ -98,7 +104,8 @@ int createCommitDir(commit commitInfo)
         }
 
         sprintf(command, "cp ./%s ./.ugit/commits/%s/", lineBuffer, dirname);
-        if(system(command)){
+        if(system(command))
+        {
             printError(111, lineBuffer, NULL);
             return 1;
         }
@@ -109,7 +116,6 @@ int createCommitDir(commit commitInfo)
             return 1;
         }
     }
-
     fclose(stageFILE);
 
     // Borrando el archivo del staging area
@@ -119,14 +125,12 @@ int createCommitDir(commit commitInfo)
         return 1;
     }
     fclose(stageFILE);
-
     if(commitInfo.ID>1)
     {
         sprintf(command,"cp -rn ./.ugit/commits/%u/. ./.ugit/commits/%u/", headCommitId(NULL), commitInfo.ID);
         if(system(command))
             printError(303, NULL, NULL);
     }
-
     return 0;
 }
 
@@ -177,7 +181,9 @@ int readCommit(FILE* logFile, commit* commitInfo){
     return !fread(commitInfo, sizeof(commit), 1, logFile);
 }
 
-int loggingCommits(){
+/// @brief Imprime el Log del directorio
+/// Se almacena la información en una lista enlazada para su posterior lectura
+void loggingCommits(){
     Log commitLog = NULL;
     commit tmpCommit;
     commitLog = MakeEmpty(commitLog);
@@ -186,7 +192,7 @@ int loggingCommits(){
     if(logFile == NULL)
     {
         printError(100, ".ugit/commits/log.txt","Puede que no haya hecho ningun commit");
-        return -1;
+        return;
     }
 
     while(!feof(logFile))
@@ -203,13 +209,14 @@ int loggingCommits(){
 
     DeleteList(commitLog);
 
-    return -1;
+    return;
 }
 
 /// @brief Calcula el valor del ID del último commit commit a partir del tamaño del log de commits
 /// @return ID del último commit
 unsigned int lastCommitId()
 {
+    long filePosition;
     FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
     if(logFile == NULL)
     {
@@ -218,12 +225,15 @@ unsigned int lastCommitId()
     }
 
     fseek(logFile,0,SEEK_END);
-    return (unsigned int)(ftell(logFile)/sizeof(commit));
+    filePosition = ftell(logFile);
+    fclose(logFile);
+    return (unsigned int)(filePosition/sizeof(commit));
 }
 
 /// @brief Devuelve el ID del commit donde se encuentra el usuario en el momento
 /// @return Id encontrado (-1 en caso de error, 0 en caso de que no haya commits)
-unsigned int headCommitId(int* position){
+unsigned int headCommitId(int* position)
+{
     unsigned int ID = 0;
     char IDstring[11];
     char lineBuffer[100];
@@ -281,13 +291,11 @@ void changeHeadCommit(unsigned int commitID){
 /// @brief Regresa el directorio actual de trabajo a una versión anterior
 /// @param commitID ID del commit correspondiente a la versión destino
 void checkout(char* commitString){
+    char command[100];
     unsigned int commitID;
-
     commitID = strtoul(commitString, NULL, 10);
 
-    char command[100];
-
-    if(!folderExists("./.ugit"))
+    if(folderExists("./.ugit"))
     {
         printError(101, ".ugit","Se recomienda ejecutar comando init");
         return;
@@ -300,8 +308,7 @@ void checkout(char* commitString){
     }
 
     sprintf(command, "./.ugit/commits/%u/",commitID);
-
-    if(!folderExists(command))
+    if(folderExists(command))
     {
         printError(101, "del commit",NULL);
         return;

@@ -1,3 +1,5 @@
+/// \file user.h
+/// \brief Cabecera para user.c
 #ifndef USER
 #define USER
 #include <stdio.h>
@@ -6,8 +8,8 @@
 #include "utilities.h"
 #include "errors.h"
 
-#define nameLenght 40
-#define mailLenght 35
+#define nameLenght 41
+#define mailLenght 36
 
 typedef struct _user
 {
@@ -15,6 +17,8 @@ typedef struct _user
     char mail[mailLenght];
 } user;
 
-int userConfig();
+void userConfig();
+
+void getInfo(int lenght, char* dest, char* message);
 
 #endif

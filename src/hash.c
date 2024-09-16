@@ -1,6 +1,11 @@
+/// \file hash.c
+/// \brief Funciones hash para hashear documentos y cadenas de texto
 #include "hash.h"
 
-// Función de hash de Jenkins (One-at-a-time)
+/// @brief Función de hash de Jenkins (One-at-a-time)
+/// @param key Cadena de texto a hashear
+/// @param len Longitud de la cadena a hashear
+/// @return Hash
 unsigned int jenkinsHash(unsigned char *key, size_t len) {
     unsigned int hash = 0;
     for (size_t i = 0; i < len; i++) {
@@ -14,7 +19,9 @@ unsigned int jenkinsHash(unsigned char *key, size_t len) {
     return hash;
 }
 
-// Función para leer el contenido de un archivo y calcular el hash
+/// @brief Función para leer el contenido de un archivo y calcular el hash
+/// @param filename Nombre del archivo a hashear
+/// @return hash del archivo
 unsigned int hashFile(char *filename) {
     FILE *file = fopen(filename, "rb"); // Abrir el archivo en modo binario
     char aux[30];

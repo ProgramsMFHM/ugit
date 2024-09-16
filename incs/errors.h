@@ -1,3 +1,5 @@
+/// \file errors.h
+/// \brief Cabecera para errors.c
 #ifndef ERRORS
 #define ERRORS
 #include <stdio.h>

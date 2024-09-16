@@ -1,3 +1,5 @@
+/// \file commit.h
+/// \brief Cabecera para commit.c
 #ifndef COMMIT
 #define COMMIT
 #include <stdio.h>
@@ -33,7 +35,7 @@ int createCommitDir(commit commitInfo);
 
 int readCommit(FILE* logFile, commit* commitInfo);
 
-int loggingCommits();
+void loggingCommits();
 
 unsigned int lastCommitId();
 

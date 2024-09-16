@@ -1,3 +1,5 @@
+/// \file list.h
+/// \brief Cabecera para list.c
 #ifndef LIST
 #define LIST
 #include <stdlib.h>

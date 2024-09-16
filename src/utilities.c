@@ -1,3 +1,5 @@
+/// \file utilities.c
+/// \brief Funciones útiles para el manejo de información del programa
 #include "utilities.h"
 
 /// @brief Esta función limpia el buffer correspondiente a la entrada estándar del computador.
@@ -17,7 +19,7 @@ void trimNewline(char *str) {
 
 /// @brief Transforma una fecha de tipo time_t (propia de <time.h>) a un atring formateado
 /// @param date Fecha de tipo time_t
-/// @return String donde se almacenará la cadea final
+/// @return String donde se almacenará la cadena final
 /// @note Asegúrese de liberar memoria una vez terminado el uso del puntero retornado por esta función.
 char* dateToLocalString(time_t date){
     struct tm *local = localtime(&date);  // Convertir a tiempo local

@@ -1,3 +1,5 @@
+/// \file list.c
+/// \brief Funciones relacionadas a listas enlazadas simples, vistas en clase
 #include "list.h"
 
 struct Node

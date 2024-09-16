@@ -1,3 +1,5 @@
+/// \file utilities.h
+/// \brief Cabecera para utilities.c
 #ifndef UTILITIES
 #define UTILITIES
 
