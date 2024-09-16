@@ -57,6 +57,8 @@ int main(int argc, char* argv[]){
         stageStatus();
     else if(!strcmp("commit\0", argv[1]))
         createCommit(argv[2]);
+    else if(!strcmp("checkout\0", argv[1]))
+        checkout(argv[2]);
     else if(!strcmp("log\0", argv[1]))
         loggingCommits();
     else

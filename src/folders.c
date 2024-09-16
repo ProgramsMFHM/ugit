@@ -63,6 +63,7 @@ int addFiles(int argc, char* argv[]){
                     }else{
                         fseek(stageFILE, fileposition, SEEK_SET);
                         fprintf(stageFILE, "%s\n", inputhash);
+                        printf("Archivo %s agregado con exito\n", argv[i]);
                         cont++;
                     }
                     duplicated = 1;

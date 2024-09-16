@@ -16,7 +16,7 @@ void createCommit(char* message){
     commit commitInfo;
     commitInfo.date = time(NULL);
     strcpy(commitInfo.message,message);
-    commitInfo.ID = nextCommitId();
+    commitInfo.ID = lastCommitId()+1;
     if(!commitInfo.ID)
         commit_error("No se puede asignar ID al commit");
 
@@ -213,19 +213,19 @@ int loggingCommits(){
     return -1;
 }
 
-/// @brief Calcula el valor del ID del proximo commit a partir del tamaño del log de commits
-/// @return Próximo ID
-unsigned int nextCommitId()
+/// @brief Calcula el valor del ID del último commit commit a partir del tamaño del log de commits
+/// @return ID del último commit
+unsigned int lastCommitId()
 {
     FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
     if(logFile == NULL)
     {
         file_error(".ugit/commits/log.txt","Sería recomendable ejecutar comando init");
-        return -1;
+        return 0;
     }
 
     fseek(logFile,0,SEEK_END);
-    return (unsigned int)((ftell(logFile)/sizeof(commit))+1);
+    return (unsigned int)(ftell(logFile)/sizeof(commit));
 }
 
 /// @brief Devuelve el ID del commit donde se encuentra la rama principal
@@ -306,4 +306,68 @@ unsigned int headCommitId(int* position){
         ID = strtoul(IDstring, NULL, 10);
 
     return ID;
+}
+
+/// @brief Altera el archivo de configuración para indicar que el HEAD cambió de lugar
+/// @param commitID Nuevo ID para el HEAD
+void changeHeadCommit(unsigned int commitID){
+    int configHeadCommitPosition;
+
+    headCommitId(&configHeadCommitPosition);
+    FILE* configFile = fopen("./.ugit/ugitConfig.txt", "r+");
+    if(configFile == NULL)
+    {
+        fprintf(stderr, "No se pudo abrir el archivo de configuracion\n");
+        return;
+    }
+    fseek(configFile, configHeadCommitPosition, SEEK_SET);
+    fprintf(configFile,"headCommit: %.10u",commitID);
+    fclose(configFile);
+}
+
+/// @brief Regresa el directorio actual de trabajo a una versión anterior
+/// @param commitID ID del commit correspondiente a la versión destino
+void checkout(char* commitString){
+    unsigned int commitID;
+
+    commitID = strtoul(commitString, NULL, 10);
+
+    char command[100];
+
+    if(!folderExists("./.ugit"))
+    {
+        folder_error(".ugit","Se recomienda ejecutar comando init");
+        return;
+    }
+    if(commitID > lastCommitId())
+    {
+        printf("El commit %u no existe\n", commitID);
+        return;
+    }
+
+    sprintf(command, "./.ugit/commits/%u/",commitID);
+
+    if(!folderExists(command))
+    {
+        folder_error(command,"La carpeta del commit no existe");
+        return;
+    }
+
+    // Eliminamos recursivamente el directorio actual a excepción del .ugit y del ugit
+    sprintf(command, "find . -mindepth 1 -maxdepth 1 ! -name '.ugit' ! -name 'ugit' -exec rm -rf {} +");
+    if(system(command))
+    {
+        commit_error("Error al cargar commit");
+        return;
+    }
+
+    // Copiar archivos del commit al directorio de trabajo
+    sprintf(command, "cp -r ./.ugit/commits/%u/. .",commitID);
+    if(system(command))
+    {
+        commit_error("No se pudo cargar la version anterior");
+        return;
+    }
+    changeHeadCommit(commitID);
+    printf("Ahora esta en la version %u\n",commitID);
 }
