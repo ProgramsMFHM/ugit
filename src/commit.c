@@ -32,14 +32,14 @@ void createCommit(char* message){
     // Leer línea por línea
     while (fgets(lineBuffer, sizeof(lineBuffer), ugitFILE) != NULL) {
         // Buscar si la línea contiene "Nombre"
-        if (strncmp(lineBuffer, "Nombre: ", 8) == 0) {
+        if (strncmp(lineBuffer, "name: ", 6) == 0) {
             // Extraer el valor después del igual
-            if(snprintf(commitInfo.autor.name, nameLenght, "%s", lineBuffer + 8) >= nameLenght)
+            if(snprintf(commitInfo.autor.name, nameLenght, "%s", lineBuffer + 6) >= nameLenght)
                 printf("Advertencia: Nombre leido fue truncado por ser demasiado grande.\n\n");
             trimNewline(commitInfo.autor.name);
         }
         // Buscar si la línea contiene "Mail"
-        else if (strncmp(lineBuffer, "Mail: ", 6) == 0) {
+        else if (strncmp(lineBuffer, "mail: ", 6) == 0) {
             // Extraer el valor después del igual
             if(snprintf(commitInfo.autor.mail, mailLenght, "%s", lineBuffer + 6) >= mailLenght)
                 printf("Advertencia: Mail leido fue truncado por ser demasiado grande.\n\n");
@@ -128,6 +128,13 @@ void printCommit(commit commitInfo)
     // Pasamos fecha del commit a string:
     char *dateString = dateToLocalString(commitInfo.date);
 
+    //Comprobamos si el commit corresponde al main:
+    if(commitInfo.ID == mainCommitId(NULL))
+        printf("(main) ");
+    //Comprobamos si el commit corresponde al head:
+    if(commitInfo.ID == headCommitId(NULL))
+        printf("(HEAD) ");
+
     // Mostramos Commit
     printf("Commit %u:\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n",commitInfo.ID, dateString, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
 
@@ -139,17 +146,29 @@ void printCommit(commit commitInfo)
 /// @param filename Es la ruta del archivo de log donde se guardará el commit
 /// @param commitInfo Estructura correspondiente a la información del commit
 void saveCommit(char* filename, commit commitInfo){
+    int configMainCommitPosition;
+
+    // Guardamos commit en el log
     FILE* logFile = fopen(filename, "ab");
     if(logFile == NULL)
     {
         fprintf(stderr, "No se pudo abrir o crear el archivo %s\n", filename);
         return;
     }
-
-    // Guardamos la fecha del commit en el archivo
     fwrite(&commitInfo, sizeof(commit), 1, logFile);
-
     fclose(logFile);
+
+    // Guardamos informacion del commit en config
+    mainCommitId(&configMainCommitPosition);
+    FILE* configFile = fopen("./.ugit/ugitConfig.txt", "r+");
+    if(configFile == NULL)
+    {
+        fprintf(stderr, "No se pudo abrir el archivo de configuracion\n");
+        return;
+    }
+    fseek(configFile, configMainCommitPosition, SEEK_SET);
+    fprintf(configFile,"mainCommit: %.10u\nheadCommit: %.10u",commitInfo.ID, commitInfo.ID);
+    fclose(configFile);
 }
 
 /// @brief Lee el siguiente commit dentro del fichero logFile
@@ -207,4 +226,84 @@ unsigned int nextCommitId()
 
     fseek(logFile,0,SEEK_END);
     return (unsigned int)((ftell(logFile)/sizeof(commit))+1);
+}
+
+/// @brief Devuelve el ID del commit donde se encuentra la rama principal
+/// @return Id encontrado (0 en caso de que no haya commits)
+unsigned int mainCommitId(int* position){
+    unsigned int ID = 0;
+    char IDstring[12];
+    char lineBuffer[100];
+    int founded = 0;
+
+    FILE *configFile;
+    if ((configFile=fopen(".ugit/ugitConfig.txt","r"))==NULL)
+    {
+        file_error("ugitConfig.txt", "Se recomienda ejecutar el comando config");
+        return 0;
+    }
+
+    // Leer línea por línea
+    while (fgets(lineBuffer, sizeof(lineBuffer), configFile) != NULL) {
+        // Buscar si la línea contiene "nmainCommit"
+        if (strncmp(lineBuffer, "mainCommit: ", 12) == 0) {
+            // Extraer el valor después del igual
+            if(snprintf(IDstring, 12, "%s", lineBuffer + 12) >= 12)
+                printf("Advertencia: ID leido no coindice con el tamanio esperado.\n\n");
+            trimNewline(IDstring);
+            founded = 1;
+            break;
+        }
+        if(position) // Si se requiere la posicion entonces pasamos la ubicacion de la linea en cuestion
+            *position = ftell(configFile);
+    }
+
+    fclose(configFile);
+
+    if(!founded)
+        printf("Error: No se encontro la informacion de la posicion del main en el log, archivo corrupto\n");
+    else
+        ID = strtoul(IDstring, NULL, 10);
+
+    return ID;
+}
+
+/// @brief Devuelve el ID del commit donde se encuentra el usuario en el momento
+/// @return Id encontrado (-1 en caso de error, 0 en caso de que no haya commits)
+unsigned int headCommitId(int* position){
+    unsigned int ID = 0;
+    char IDstring[11];
+    char lineBuffer[100];
+    int founded = 0;
+
+    FILE *configFile;
+    if ((configFile=fopen(".ugit/ugitConfig.txt","r"))==NULL)
+    {
+        file_error("ugitConfig.txt", "Se recomienda ejecutar el comando config");
+        return 0;
+    }
+
+    // Leer línea por línea
+    while (fgets(lineBuffer, sizeof(lineBuffer), configFile) != NULL) {
+        // Buscar si la línea contiene "nmainCommit"
+        if (strncmp(lineBuffer, "headCommit: ", 12) == 0) {
+            // Extraer el valor después del igual
+            if(snprintf(IDstring, 11, "%s", lineBuffer + 12) >= 11)
+                printf("Advertencia: ID leido no coindice con el tamanio esperado.\n\n");
+            trimNewline(IDstring);
+            founded = 1;
+            break;
+        }
+        if(position) // Si se requiere la posicion entonces pasamos la ubicacion de la linea en cuestion
+            *position = ftell(configFile);
+    }
+
+    fclose(configFile);
+
+    if(!founded)
+        printf("Error: No se encontro la informacion de la posicion del HEAD en el log, archivo corrupto\n");
+    else
+        ID = strtoul(IDstring, NULL, 10);
+
+    return ID;
 }

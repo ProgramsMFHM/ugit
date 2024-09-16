@@ -36,4 +36,8 @@ int readCommit(FILE* logFile, commit* commitInfo);
 int loggingCommits();
 
 unsigned int nextCommitId();
+
+unsigned int mainCommitId(int* position);
+
+unsigned int headCommitId(int* position);
 #endif
