@@ -23,7 +23,9 @@ char* dateToLocalString(time_t date){
     struct tm *local = localtime(&date);  // Convertir a tiempo local
     tzset(); // Inicializar la información de la zona horaria
 
-    char stringPointer[24];
+    char *stringPointer = malloc(24);
+    if(stringPointer==NULL)
+        printError(200, "24", NULL);
 
     if(strftime(stringPointer, 24, "%Y-%m-%d %H:%M:%S %Z",local) == 0)
     {
