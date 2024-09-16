@@ -4,6 +4,7 @@
 #include <string.h>
 #include "folders.h"
 #include "utilities.h"
+#include "errors.h"
 
 #define nameLenght 40
 #define mailLenght 35

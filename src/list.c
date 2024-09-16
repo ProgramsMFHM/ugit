@@ -1,6 +1,4 @@
-#include <stdlib.h>
 #include "list.h"
-#include "errors.h"
 
 struct Node
 {
@@ -10,11 +8,15 @@ struct Node
 
 List MakeEmpty( List L )
 {
+    char aux[30];
     if( L != NULL )
         DeleteList( L );
     L = malloc( sizeof( struct Node ) );
     if( L == NULL )
-        fatal_error( "No se pudo asignar espacio" );
+    {
+        sprintf(aux, "%lu", sizeof( struct Node ));
+        printError(200, aux, NULL);
+    }
     L->Next = NULL;
     return L;
 }
@@ -65,12 +67,15 @@ Position FindPrevious( unsigned int X, List L )
 
 void Insert( ElementType X, List L, Position P )
 {
+    char aux[30];
     Position TmpCell;
 
     TmpCell = malloc( sizeof( struct Node ) );
     if( TmpCell == NULL )
-        fatal_error( "No se pudo asignar espacio" );
-
+    {
+        sprintf(aux, "%lu", sizeof( struct Node ));
+        printError(200, aux, NULL);
+    }
     TmpCell->Element = X;
     TmpCell->Next = P->Next;
     P->Next = TmpCell;

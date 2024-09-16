@@ -4,12 +4,12 @@
 void createCommit(char* message){
     if(!message)
     {
-        printf("No ingreso un mensaje para el commit");
+        printError(105, NULL, NULL);
         return;
     }
     if(strlen(message)>commitLenght)
     {
-        printf("Mensaje de commit demasiado largo (Limite 256)");
+        printError(106, NULL, NULL);
         return;
     }
 
@@ -18,14 +18,14 @@ void createCommit(char* message){
     strcpy(commitInfo.message,message);
     commitInfo.ID = lastCommitId()+1;
     if(!commitInfo.ID)
-        commit_error("No se puede asignar ID al commit");
+        printError(107, NULL, NULL);
 
     char lineBuffer[100];
     // Buscamos usuario
     FILE *ugitFILE;
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","r"))==NULL)
     {
-        file_error("ugitConfig.txt", "Se recomienda ejecutar el comando config");
+        printError(100, ".ugit/ugitConfig.txt", "Se recomienda ejecutar el comando config");
         return;
     }
 
@@ -35,14 +35,14 @@ void createCommit(char* message){
         if (strncmp(lineBuffer, "name: ", 6) == 0) {
             // Extraer el valor después del igual
             if(snprintf(commitInfo.autor.name, nameLenght, "%s", lineBuffer + 6) >= nameLenght)
-                printf("Advertencia: Nombre leido fue truncado por ser demasiado grande.\n\n");
+                printError(301, "nombre", NULL);
             trimNewline(commitInfo.autor.name);
         }
         // Buscar si la línea contiene "Mail"
         else if (strncmp(lineBuffer, "mail: ", 6) == 0) {
             // Extraer el valor después del igual
             if(snprintf(commitInfo.autor.mail, mailLenght, "%s", lineBuffer + 6) >= mailLenght)
-                printf("Advertencia: Mail leido fue truncado por ser demasiado grande.\n\n");
+                printError(301, "correo", NULL);
             trimNewline(commitInfo.autor.mail);
         }
     }
@@ -64,7 +64,7 @@ int createCommitDir(commit commitInfo)
 {
     if(hashFile(".ugit/stagingArea.txt")==0)
     {
-        commit_error("El StagingArea esta vacio");
+        printError(108, NULL, NULL);
         return 1;
     }
 
@@ -76,7 +76,7 @@ int createCommitDir(commit commitInfo)
     sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
 
     if(system(command)){
-        printf("No se pudo crear la carpeta %s\n\n", dirname);
+        printError(113, dirname, NULL);
         return 1;
     }
 
@@ -84,7 +84,7 @@ int createCommitDir(commit commitInfo)
 
     if ((stageFILE=fopen(".ugit/stagingArea.txt","r"))==NULL)
     {
-        file_error(".ugit/stagingArea.txt","");
+        printError(100, ".ugit/stagingArea.txt", NULL);
         return 1;
     }
 
@@ -93,19 +93,19 @@ int createCommitDir(commit commitInfo)
         trimNewline(lineBuffer);
         if(fileExists(lineBuffer))
         {
-            file_error(lineBuffer,"");
+            printError(100, lineBuffer, NULL);
             return 1;
         }
 
         sprintf(command, "cp ./%s ./.ugit/commits/%s/", lineBuffer, dirname);
         if(system(command)){
-            printf("No se pudo guardar el archivo %s\n", lineBuffer);
+            printError(111, lineBuffer, NULL);
             return 1;
         }
 
         if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) == NULL) // Saltamos hash del archivo leido
         {
-            printf("Error al leer el archivo");
+            printError(109, NULL, NULL);
             return 1;
         }
     }
@@ -115,7 +115,7 @@ int createCommitDir(commit commitInfo)
     // Borrando el archivo del staging area
     if ((stageFILE=fopen(".ugit/stagingArea.txt","w"))==NULL)
     {
-        file_error(".ugit/stagingArea.txt","");
+        printError(100, ".ugit/stagingArea.txt", NULL);
         return 1;
     }
     fclose(stageFILE);
@@ -124,7 +124,7 @@ int createCommitDir(commit commitInfo)
     {
         sprintf(command,"cp -rn ./.ugit/commits/%u/. ./.ugit/commits/%u/", headCommitId(NULL), commitInfo.ID);
         if(system(command))
-            fatal_error("No se pudo almacenar informacion de la version anterior");
+            printError(303, NULL, NULL);
     }
 
     return 0;
@@ -159,7 +159,7 @@ void saveCommit(char* filename, commit commitInfo){
     FILE* logFile = fopen(filename, "ab");
     if(logFile == NULL)
     {
-        fprintf(stderr, "No se pudo abrir o crear el archivo %s\n", filename);
+        printError(112, filename, NULL);
         return;
     }
     fwrite(&commitInfo, sizeof(commit), 1, logFile);
@@ -174,11 +174,7 @@ void saveCommit(char* filename, commit commitInfo){
 /// @return 0 en caso de exito, 1 en caso de error
 /// @note Se espera que logFile esté ya inicializado
 int readCommit(FILE* logFile, commit* commitInfo){
-    if(fread(commitInfo, sizeof(commit), 1, logFile) == 0)
-    {
-        return 1;
-    }
-    return 0;
+    return !fread(commitInfo, sizeof(commit), 1, logFile);
 }
 
 int loggingCommits(){
@@ -189,7 +185,7 @@ int loggingCommits(){
     FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
     if(logFile == NULL)
     {
-        file_error(".ugit/commits/log.txt","Puede que no haya hecho ningun commit");
+        printError(100, ".ugit/commits/log.txt","Puede que no haya hecho ningun commit");
         return -1;
     }
 
@@ -217,7 +213,7 @@ unsigned int lastCommitId()
     FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
     if(logFile == NULL)
     {
-        file_error(".ugit/commits/log.txt","Sería recomendable ejecutar comando init");
+        printError(100, ".ugit/commits/log.txt","Sería recomendable ejecutar comando init");
         return 0;
     }
 
@@ -231,12 +227,12 @@ unsigned int headCommitId(int* position){
     unsigned int ID = 0;
     char IDstring[11];
     char lineBuffer[100];
-    int founded = 0;
+    int found = 0;
 
     FILE *configFile;
     if ((configFile=fopen(".ugit/ugitConfig.txt","r"))==NULL)
     {
-        file_error("ugitConfig.txt", "Se recomienda ejecutar el comando config");
+        printError(100, "ugitConfig.txt", "Se recomienda ejecutar el comando config");
         return 0;
     }
 
@@ -246,9 +242,9 @@ unsigned int headCommitId(int* position){
         if (strncmp(lineBuffer, "headCommit: ", 12) == 0) {
             // Extraer el valor después del igual
             if(snprintf(IDstring, 11, "%s", lineBuffer + 12) >= 11)
-                printf("Advertencia: ID leido no coindice con el tamanio esperado.\n\n");
+                printError(302, NULL, NULL);
             trimNewline(IDstring);
-            founded = 1;
+            found = 1;
             break;
         }
         if(position) // Si se requiere la posicion entonces pasamos la ubicacion de la linea en cuestion
@@ -257,7 +253,7 @@ unsigned int headCommitId(int* position){
 
     fclose(configFile);
 
-    if(!founded)
+    if(!found)
         printf("Error: No se encontro la informacion de la posicion del HEAD en el log, archivo corrupto\n");
     else
         ID = strtoul(IDstring, NULL, 10);
@@ -274,7 +270,7 @@ void changeHeadCommit(unsigned int commitID){
     FILE* configFile = fopen("./.ugit/ugitConfig.txt", "r+");
     if(configFile == NULL)
     {
-        fprintf(stderr, "No se pudo abrir el archivo de configuracion\n");
+        printError(302, "./.ugit/ugitConfig.txt", NULL);
         return;
     }
     fseek(configFile, configHeadCommitPosition, SEEK_SET);
@@ -293,12 +289,13 @@ void checkout(char* commitString){
 
     if(!folderExists("./.ugit"))
     {
-        folder_error(".ugit","Se recomienda ejecutar comando init");
+        printError(101, ".ugit","Se recomienda ejecutar comando init");
         return;
     }
-    if(commitID > lastCommitId())
+    if(commitID > lastCommitId() || commitID < 1)
     {
-        printf("El commit %u no existe\n", commitID);
+        sprintf(command, "%u",commitID);
+        printError(116, command, NULL);
         return;
     }
 
@@ -306,7 +303,7 @@ void checkout(char* commitString){
 
     if(!folderExists(command))
     {
-        folder_error(command,"La carpeta del commit no existe");
+        printError(101, "del commit",NULL);
         return;
     }
 
@@ -314,7 +311,7 @@ void checkout(char* commitString){
     sprintf(command, "find . -mindepth 1 -maxdepth 1 ! -name '.ugit' ! -name 'ugit' -exec rm -rf {} +");
     if(system(command))
     {
-        commit_error("Error al cargar commit");
+        printError(201, NULL,NULL);
         return;
     }
 
@@ -322,7 +319,7 @@ void checkout(char* commitString){
     sprintf(command, "cp -r ./.ugit/commits/%u/. .",commitID);
     if(system(command))
     {
-        commit_error("No se pudo cargar la version anterior");
+        printError(201, NULL,NULL);
         return;
     }
     changeHeadCommit(commitID);

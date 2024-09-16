@@ -21,13 +21,13 @@ int userConfig(){
             else
             {
                 flushInputBuffer();
-                printf("Entrada demasiado larga. Intente nuevamente.\n");
+                printError(119, NULL, NULL);
             }
         }
         else
         {
             flushInputBuffer();
-            printf("Error en la entrada. Intente nuevamente.\n");
+            printError(120, NULL, NULL);
         }
     }
 
@@ -46,13 +46,13 @@ int userConfig(){
             else
             {
                 flushInputBuffer();
-                printf("Entrada demasiado larga. Intente nuevamente.\n");
+                printError(119, NULL, NULL);
             }
         }
         else
         {
             flushInputBuffer();
-            printf("Error en la entrada. Intente nuevamente.\n");
+            printError(120, NULL, NULL);
         }
     }
 
@@ -60,7 +60,7 @@ int userConfig(){
     if ((ugitFILE=fopen(".ugit/ugitConfig.txt","w+"))==NULL)
         return 0;
 
-    fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,0,0);
+    fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,0);
     fclose(ugitFILE);
     return 1;
 }

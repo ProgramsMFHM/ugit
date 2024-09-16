@@ -1,5 +1,7 @@
 #ifndef LIST
 #define LIST
+#include <stdlib.h>
+#include "errors.h"
 #include "commit.h"
 #include "time.h"
 

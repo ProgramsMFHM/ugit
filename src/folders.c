@@ -40,7 +40,7 @@ int addFiles(int argc, char* argv[]){
 
     if ((stageFILE=fopen(".ugit/stagingArea.txt","r+"))==NULL)
     {
-        file_error(".ugit/stagingArea.txt", "Cree el archivo o ejecute el comando init");
+        printError(100, ".ugit/stagingArea.txt", "Cree el archivo o ejecute el comando init");
         return 0;
     }
 
@@ -59,7 +59,7 @@ int addFiles(int argc, char* argv[]){
                 if (strncmp(lineBuffer, argv[i], strlen(argv[i])) == 0) {
                     if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL && !strncmp(inputhash, lineBuffer, 10)) // Leemos la linea de hash
                     {
-                        printf("El archivo %s no ha recibido un cambio desde que se agrego al staging area\n", argv[i]);
+                        printError(118, argv[i], NULL);
                     }else{
                         fseek(stageFILE, fileposition, SEEK_SET);
                         fprintf(stageFILE, "%s\n", inputhash);
@@ -81,7 +81,7 @@ int addFiles(int argc, char* argv[]){
             }
         }
         else
-            printf("Archivo %s no existe\n", argv[i]);
+            printError(112, argv[i], NULL);
     }
 
     return cont;
@@ -94,7 +94,7 @@ int stageStatus(){
         return -1;
     if(hashFile(".ugit/stagingArea.txt")==0)
     {
-        printf("El StagingArea esta vacio\n");
+        printError(108, NULL, NULL);
         return 1;
     }
 

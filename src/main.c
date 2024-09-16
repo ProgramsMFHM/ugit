@@ -1,3 +1,7 @@
+/// \file main.c
+/// \author Alan Almonacid y Milton Hernández
+/// \date 25 de Septiembre del 2024
+/// \brief Archivo principal para el proyecto.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,10 +23,10 @@ int main(int argc, char* argv[]){
             printf("Carpeta .ugit creada con exito\n");
             break;
         case 0:
-            printf("No se pudo crear la carpeta\n");
+            printError(113, ".ugit", NULL);
             break;
         case -1:
-            printf("ugit ya esta iniciado en este directorio\n");
+            printError(103, NULL, NULL);
             break;
         }
     }
@@ -34,10 +38,10 @@ int main(int argc, char* argv[]){
             printf("Usuario iniciado almacenado con exito.\n");
             break;
         case 0:
-            printf("No se pudo guardar el usuario.\n");
+            printError(114, NULL, NULL);
             break;
         case -1:
-            printf("No existe directorio .ugit, ejecute el comando init.\n");
+            printError(101, ".ugit", "Ejecute el comando init");
             break;
         }
     }
@@ -46,10 +50,10 @@ int main(int argc, char* argv[]){
         switch (addFiles(argc-2, argv+2))
         {
         case 0:
-            printf("No se guardo ningun archivo\n");
+            printError(300, NULL, NULL);
             break;
         case -1:
-            folder_error(".ugit","Se recomienda ejecutar el comando init");
+            printError(101, ".ugit", "Ejecute el comando init");
             break;
         }
     }
@@ -62,7 +66,7 @@ int main(int argc, char* argv[]){
     else if(!strcmp("log\0", argv[1]))
         loggingCommits();
     else
-        printf("Comando %s no existe\n", argv[1]);
+        printError(104, argv[1], NULL);
 
     return 0;
 }

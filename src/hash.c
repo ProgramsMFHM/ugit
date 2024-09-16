@@ -15,10 +15,11 @@ unsigned int jenkinsHash(unsigned char *key, size_t len) {
 }
 
 // Función para leer el contenido de un archivo y calcular el hash
-unsigned int hashFile(const char *filename) {
+unsigned int hashFile(char *filename) {
     FILE *file = fopen(filename, "rb"); // Abrir el archivo en modo binario
+    char aux[30];
     if (!file) {
-        perror("No se puede abrir el archivo");
+        printError(112, filename, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -30,7 +31,8 @@ unsigned int hashFile(const char *filename) {
     // Leer el contenido del archivo
     unsigned char *buffer = (unsigned char *)malloc(fileSize * sizeof(unsigned char));
     if (!buffer) {
-        perror("No se puede asignar memoria");
+        sprintf(aux, "%lu", (fileSize * sizeof(unsigned char)));
+        printError(200, aux, NULL);
         fclose(file);
         exit(EXIT_FAILURE);
     }
