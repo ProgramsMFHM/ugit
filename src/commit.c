@@ -71,6 +71,7 @@ int createCommitDir(commit commitInfo)
     char dirname[11];
     char command[150];
     char lineBuffer[100];
+
     sprintf(dirname, "%u", commitInfo.ID);
     sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
 
@@ -118,6 +119,14 @@ int createCommitDir(commit commitInfo)
         return 1;
     }
     fclose(stageFILE);
+
+    if(commitInfo.ID>1)
+    {
+        sprintf(command,"cp -rn ./.ugit/commits/%u/. ./.ugit/commits/%u/", headCommitId(NULL), commitInfo.ID);
+        if(system(command))
+            fatal_error("No se pudo almacenar informacion de la version anterior");
+    }
+
     return 0;
 }
 
