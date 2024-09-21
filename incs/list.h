@@ -16,11 +16,11 @@ typedef PtrToNode Position;
 
 List makeEmpty( List L );
 int isEmpty( List L );
-int isLast( Position P, List L );
+int isLast( Position P );
 Position find( unsigned int X, List L );
 void delete( unsigned int X, List L );
 Position findPrevious( unsigned int X, List L );
-void insert( ElementType X, List L, Position P );
+void insert( ElementType X, Position P );
 void deleteList( List L );
 Position header( List L );
 Position first( List L );

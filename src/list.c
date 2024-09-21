@@ -37,11 +37,10 @@ int isEmpty( List L )
     return L->Next == NULL;
 }
 
-/// @brief Indica si un nodo @p P es el último de una lista @p L
+/// @brief Indica si un nodo @p P es el último de una lista
 /// @param P Nodo a revisar
-/// @param L Lista a la que pertenece P
 /// @return 0 en caso de no pertenencia
-int isLast( Position P, List L )
+int isLast( Position P)
 {
     return P->Next == NULL;
 }
@@ -70,7 +69,7 @@ void delete(unsigned int X, List L)
 
     P = findPrevious( X, L );
 
-    if( !isLast( P, L ) )
+    if( !isLast( P ) )
     {
         TmpCell = P->Next;
         P->Next = TmpCell->Next;
@@ -91,11 +90,10 @@ Position findPrevious( unsigned int X, List L )
     return P;
 }
 
-/// @brief Inserta el elemento @p X dentro de la lista @p L luego del nodo @p P
+/// @brief Inserta el elemento @p X dentro de una lista luego del nodo @p P
 /// @param X Elemento a insertar
-/// @param L Lista dentro de la que se insertará
 /// @param P Nodo después del cuál se insertará el elemento @p X
-void insert( ElementType X, List L, Position P )
+void insert( ElementType X, Position P )
 {
     char aux[30];
     Position TmpCell;

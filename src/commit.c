@@ -189,7 +189,7 @@ void loggingCommits(){
         if(readCommit(logFile, &tmpCommit))
            break;
 
-        insert(tmpCommit, commitLog, header(commitLog));
+        insert(tmpCommit, header(commitLog));
     }
 
     fclose(logFile);

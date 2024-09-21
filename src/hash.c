@@ -44,7 +44,11 @@ unsigned int hashFile(char *filename) {
         exit(EXIT_FAILURE);
     }
 
-    fread(buffer, sizeof(unsigned char), fileSize, file);
+    if(fread(buffer, sizeof(unsigned char), fileSize, file) < (long unsigned int)fileSize)
+    {
+        printError(109, filename, NULL);
+        return 0;
+    }
     fclose(file);
 
     // Calcular el hash del contenido
