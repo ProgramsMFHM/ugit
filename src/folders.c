@@ -30,6 +30,7 @@ int addFiles(int argc, char* argv[]){
         return -1;
     }
     int duplicated = 0;
+    int added = 0;
     int cont = 0;
     char inputhash[11];
     char lineBuffer[100];
@@ -64,8 +65,7 @@ int addFiles(int argc, char* argv[]){
                     else{
                         fseek(stageFILE, (ftell(stageFILE)-strlen(lineBuffer)), SEEK_SET);
                         fprintf(stageFILE, "%s\n", inputhash);
-                        printf("Archivo %s agregado con exito\n", argv[i]);
-                        cont++;
+                        added = 1;
                     }
                     duplicated = 1;
                     break;
@@ -77,8 +77,17 @@ int addFiles(int argc, char* argv[]){
             {
                 fseek(stageFILE, 0, SEEK_END);
                 fprintf(stageFILE, "%s\n%.10u\n", argv[i], hashFile(argv[i]));
+                added = 1;
+            }
+            if(added)
+            {   // Procedemos a copiar archivo a carpeta temporal
                 printf("Archivo %s agregado con exito\n", argv[i]);
                 cont++;
+                if(folderExists("./.ugit/commits/tmp") && system("mkdir ./.ugit/commits/tmp"))
+                    printError(113, "./.ugit/commits/tmp", "Pueden haber problemas al hacer commit");
+                sprintf(lineBuffer, "cp ./%s ./.ugit/commits/tmp/", argv[i]); // Usamos la variable linebuffer para evitar crear otra
+                if(system(lineBuffer))
+                    printError(111, argv[i], "Pueden haber problemas al hacer commit");
             }
         }
         else

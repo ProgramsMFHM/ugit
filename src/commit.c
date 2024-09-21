@@ -76,7 +76,6 @@ int createCommitDir(commit commitInfo)
 
     char dirname[11];
     char command[150];
-    char lineBuffer[100];
 
     sprintf(dirname, "%u", commitInfo.ID);
     sprintf(command, "mkdir ./.ugit/commits/%s", dirname);
@@ -87,38 +86,28 @@ int createCommitDir(commit commitInfo)
         return 1;
     }
 
-    FILE *stageFILE;
-    if ((stageFILE=fopen(".ugit/stagingArea.txt","r"))==NULL)
+    if(folderExists("./.ugit/commits/tmp"))
     {
-        printError(100, ".ugit/stagingArea.txt", NULL);
+        printError(113, "./.ugit/commits/tmp", "No se tienen registros de los archivos en el StagingArea");
         return 1;
     }
-    // Leer línea por línea
-    while (fgets(lineBuffer, sizeof(lineBuffer), stageFILE) != NULL)
+
+    sprintf(command, "cp ./.ugit/commits/tmp/* ./.ugit/commits/%s", dirname);
+
+    if(system(command))
     {
-        trimNewline(lineBuffer);
-        if(fileExists(lineBuffer))
-        {
-            printError(100, lineBuffer, NULL);
-            return 1;
-        }
-
-        sprintf(command, "cp ./%s ./.ugit/commits/%s/", lineBuffer, dirname);
-        if(system(command))
-        {
-            printError(111, lineBuffer, NULL);
-            return 1;
-        }
-
-        if(fgets(lineBuffer, sizeof(lineBuffer), stageFILE) == NULL) // Saltamos hash del archivo leido
-        {
-            printError(109, NULL, NULL);
-            return 1;
-        }
+        printError(303, NULL, "La informacion del commit no fue guardada");
+        return 1;
     }
-    fclose(stageFILE);
+
+    // Borrando carpeta temporal de staging area
+    if(system("rm -r ./.ugit/commits/tmp/"))
+    {
+        printError(121, "./.ugit/commits/tmp/", "Se recomienda eliminarlo antes de continuar usando Ugit");
+    }
 
     // Borrando el archivo del staging area
+    FILE *stageFILE;
     if ((stageFILE=fopen(".ugit/stagingArea.txt","w"))==NULL)
     {
         printError(100, ".ugit/stagingArea.txt", NULL);

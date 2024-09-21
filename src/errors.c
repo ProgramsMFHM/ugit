@@ -95,6 +95,9 @@ void printError(int num, char* aux, char* obs) {
         case 303:
             printf("No se logro guardar archivos antiguos\n");
             break;
+        case 304:
+            printf("No se logro eliminar el directorio %s\n", aux);
+            break;
         default:
             printf("Codigo de error desconocido\n");
     }

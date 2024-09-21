@@ -36,3 +36,4 @@ Se tiene la función `printError(int num, char* aux, char* obs)` que dependiendo
 | 301    | El <aux> fue truncado por ser demasiado largo                              |
 | 302    | ID leído en el archivo de configuración no coincide con el tamaño esperado |
 | 303    | No se logró guardar archivos antiguos                                      |
+| 304    | No se logró eliminar el directorio <aux>                                   |
