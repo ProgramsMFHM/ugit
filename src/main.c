@@ -11,8 +11,6 @@
 #include "hash.h"
 #include "user.h"
 
-void init();
-
 int main(int argc, char* argv[])
 {
     if(!strcmp("init\0", argv[1]))
@@ -43,40 +41,4 @@ int main(int argc, char* argv[])
         printError(104, argv[1], NULL);
 
     return 0;
-}
-
-void init()
-{
-    // Probamos si la carpeta de ugit existe
-    if(folderExists(".ugit"))
-    {
-        printError(103, NULL, NULL);
-        return;
-    }
-    // Intentamos crear carpeta
-    if(system("mkdir .ugit"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos archivo de staging
-    if(system("touch .ugit/stagingArea.txt"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos carpeta para comits
-    if(system("mkdir ./.ugit/commits"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos archivo de log
-    if(system("touch .ugit/commits/log.txt"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-
-    printf("Carpeta .ugit creada con exito\n");
 }

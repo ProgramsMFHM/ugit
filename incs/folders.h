@@ -16,4 +16,6 @@ int addFiles(int argc, char* argv[]);
 
 void stageStatus();
 
+void init();
+
 #endif

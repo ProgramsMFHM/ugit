@@ -5,7 +5,7 @@
 /// @brief Inicializa el archivo de configuración del Ugit
 void userConfig()
 {
-    if(!folderExists(".ugit"))
+    if(folderExists(".ugit"))
     {
         printError(101, ".ugit", "Ejecute el comando init");
         return;
