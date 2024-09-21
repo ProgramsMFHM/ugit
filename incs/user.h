@@ -11,9 +11,12 @@
 #define nameLenght 41
 #define mailLenght 36
 
+/// @brief Información sobre un usuario dentro del programa
 typedef struct _user
 {
+    /// @brief Nombre de usuario
     char name[nameLenght];
+    /// @brief Correo electrónico del usuario
     char mail[mailLenght];
 } user;
 

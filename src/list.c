@@ -2,38 +2,55 @@
 /// \brief Funciones relacionadas a listas enlazadas simples, vistas en clase
 #include "list.h"
 
-struct Node
+/// @brief Estructura para manejar el uso de Listas Enlazadas Simples
+struct _node
 {
+    /// @brief Contenido del nodo
     ElementType Element;
-    Position    Next;
+    /// @brief Puntero al siguiente nodo de la lista
+    Position Next;
 };
 
-List MakeEmpty( List L )
+/// @brief Vacía una lista dejando solamente el centinela apuntando a NULL
+/// @param L Lista a vaciar
+/// @return Puntero a la lista vacía
+List makeEmpty( List L )
 {
     char aux[30];
     if( L != NULL )
-        DeleteList( L );
-    L = malloc( sizeof( struct Node ) );
+        deleteList( L );
+    L = malloc( sizeof( struct _node ) );
     if( L == NULL )
     {
-        sprintf(aux, "%lu", sizeof( struct Node ));
+        sprintf(aux, "%lu", sizeof( struct _node ));
         printError(200, aux, NULL);
     }
     L->Next = NULL;
     return L;
 }
 
-int IsEmpty( List L )
+/// @brief Indica si una lista está vacía
+/// @param L Lista a comprobar
+/// @return 0 en caso vacío
+int isEmpty( List L )
 {
     return L->Next == NULL;
 }
 
-int IsLast( Position P, List L )
+/// @brief Indica si un nodo @p P es el último de una lista @p L
+/// @param P Nodo a revisar
+/// @param L Lista a la que pertenece P
+/// @return 0 en caso de no pertenencia
+int isLast( Position P, List L )
 {
     return P->Next == NULL;
 }
 
-Position Find(unsigned int X, List L)
+/// @brief Busca un nodo dentro de @p L que contenga el elemento @p X
+/// @param X Elemento a buscar
+/// @param L Lista dentro de la que se buscará
+/// @return Nodo donde se encuentra X, NULL en caso de no encontrar nada
+Position find(unsigned int X, List L)
 {
     Position P;
 
@@ -44,13 +61,16 @@ Position Find(unsigned int X, List L)
     return P;
 }
 
-void Delete(unsigned int X, List L)
+/// @brief Busca un nodo dentro de @p L que contenga el elemento @p X y lo elimina
+/// @param X Elemento a buscar
+/// @param L Lista dentro de la que se buscará
+void delete(unsigned int X, List L)
 {
     Position P, TmpCell;
 
-    P = FindPrevious( X, L );
+    P = findPrevious( X, L );
 
-    if( !IsLast( P, L ) )
+    if( !isLast( P, L ) )
     {
         TmpCell = P->Next;
         P->Next = TmpCell->Next;
@@ -58,7 +78,11 @@ void Delete(unsigned int X, List L)
     }
 }
 
-Position FindPrevious( unsigned int X, List L )
+/// @brief Encuentra el nodo anterior al que contiene el elemento @p X
+/// @param X Elemento a buscar
+/// @param L Lista dentro de la que se buscará
+/// @return El nodo previo al que contiene X, en caso de no encontrar nada devuelve NULL
+Position findPrevious( unsigned int X, List L )
 {
     Position P;
     P = L;
@@ -67,15 +91,19 @@ Position FindPrevious( unsigned int X, List L )
     return P;
 }
 
-void Insert( ElementType X, List L, Position P )
+/// @brief Inserta el elemento @p X dentro de la lista @p L luego del nodo @p P
+/// @param X Elemento a insertar
+/// @param L Lista dentro de la que se insertará
+/// @param P Nodo después del cuál se insertará el elemento @p X
+void insert( ElementType X, List L, Position P )
 {
     char aux[30];
     Position TmpCell;
 
-    TmpCell = malloc( sizeof( struct Node ) );
+    TmpCell = malloc( sizeof( struct _node ) );
     if( TmpCell == NULL )
     {
-        sprintf(aux, "%lu", sizeof( struct Node ));
+        sprintf(aux, "%lu", sizeof( struct _node ));
         printError(200, aux, NULL);
     }
     TmpCell->Element = X;
@@ -83,7 +111,9 @@ void Insert( ElementType X, List L, Position P )
     P->Next = TmpCell;
 }
 
-void DeleteList( List L )
+/// @brief Elimina la lista @p L
+/// @param L Lista a eliminar
+void deleteList( List L )
 {
     Position P, Tmp;
 
@@ -96,43 +126,43 @@ void DeleteList( List L )
         P = Tmp;
     }
 }
-void InvertList( List L )
-{
-    Position P = L->Next;
-    Position Next = P;
-    Position Previous = NULL;
 
-    while( P != NULL )
-    {
-        Next = P->Next;
-        P->Next = Previous;
-        Previous = P;
-        P = Next;
-    }
-    L->Next = Previous;
-}
-
-Position Header( List L )
+/// @brief Retorna el centinela de la lista @p L
+/// @param L Lista de la que se retornará el centinela
+/// @return Se retorna la misma lista
+Position header( List L )
 {
     return L;
 }
 
-Position First( List L )
+/// @brief Retorna el elemento inmediatamente posterior al centinela de la lista @p L
+/// @param L Lista de la que se retornará el primer elemento
+/// @return Se retorna la misma lista
+Position first( List L )
 {
     return L->Next;
 }
 
-Position Advance( Position P )
+/// @brief Retorna el elemento inmediatamente posterior al nodo @p P
+/// @param P Nodo sobre el que se buscará el siguiente
+/// @return Se retorna el nodo correspondiente
+Position advance( Position P )
 {
     return P->Next;
 }
 
-ElementType Retrieve( Position P )
+/// @brief Devuelve el elemento dentro del nodo @p P
+/// @param P Nodo dentro del que se encuentra la información a devolver
+/// @return Retorna el elemento dentro de @p P
+ElementType retrieve( Position P )
 {
     return P->Element;
 }
 
-List PrintList( List L ){
+/// @brief Imprime por consola la lsita @p L
+/// @param L Lista a imprimir
+/// @return Retorna un nodo a la lista impresa
+List printList( List L ){
     Position P = L->Next;
 
     while (P)

@@ -175,7 +175,7 @@ int readCommit(FILE* logFile, commit* commitInfo){
 void loggingCommits(){
     Log commitLog = NULL;
     commit tmpCommit;
-    commitLog = MakeEmpty(commitLog);
+    commitLog = makeEmpty(commitLog);
 
     FILE* logFile = fopen(".ugit/commits/log.txt", "rb");
     if(logFile == NULL)
@@ -189,14 +189,14 @@ void loggingCommits(){
         if(readCommit(logFile, &tmpCommit))
            break;
 
-        Insert(tmpCommit, commitLog, Header(commitLog));
+        insert(tmpCommit, commitLog, header(commitLog));
     }
 
     fclose(logFile);
 
-    PrintList(commitLog);
+    printList(commitLog);
 
-    DeleteList(commitLog);
+    deleteList(commitLog);
 
     return;
 }

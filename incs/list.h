@@ -9,23 +9,23 @@
 
 typedef commit ElementType;
 struct Node;
-typedef struct Node *PtrToNode;
+typedef struct _node *PtrToNode;
 typedef PtrToNode List;
 typedef PtrToNode Log;
 typedef PtrToNode Position;
 
-List MakeEmpty( List L );
-int IsEmpty( List L );
-int IsLast( Position P, List L );
-Position Find( unsigned int X, List L );
-void Delete( unsigned int X, List L );
-Position FindPrevious( unsigned int X, List L );
-void Insert( ElementType X, List L, Position P );
-void DeleteList( List L );
-Position Header( List L );
-Position First( List L );
-Position Advance( Position P );
-ElementType Retrieve( Position P );
-List PrintList( List L );
+List makeEmpty( List L );
+int isEmpty( List L );
+int isLast( Position P, List L );
+Position find( unsigned int X, List L );
+void delete( unsigned int X, List L );
+Position findPrevious( unsigned int X, List L );
+void insert( ElementType X, List L, Position P );
+void deleteList( List L );
+Position header( List L );
+Position first( List L );
+Position advance( Position P );
+ElementType retrieve( Position P );
+List printList( List L );
 
 #endif
