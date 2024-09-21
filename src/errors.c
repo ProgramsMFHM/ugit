@@ -83,6 +83,10 @@ void printError(int num, char* aux, char* obs) {
             printf("No se logro cambiar de version\n");
             exit(-1);
             break;
+        case 202:
+            printf("No se ingresó un comando\n");
+            exit(-1);
+            break;
         case 300:
             printf("No se guardo ningun archivo en el StagingArea\n");
             break;

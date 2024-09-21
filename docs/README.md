@@ -32,6 +32,7 @@ Se tiene la función `printError(int num, char* aux, char* obs)` que dependiendo
 | 120    | Error en la entrada                                                        |
 | 200    | No se logró almacenar <aux> bytes en memoria                               |
 | 201    | No se logró cambiar de versión                                             |
+| 202    | No se ingresó un comando                                                   |
 | 300    | No se guardó ningún archivo en el StagingArea                              |
 | 301    | El <aux> fue truncado por ser demasiado largo                              |
 | 302    | ID leído en el archivo de configuración no coincide con el tamaño esperado |

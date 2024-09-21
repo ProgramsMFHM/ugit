@@ -13,6 +13,9 @@
 
 int main(int argc, char* argv[])
 {
+    if(!argv[1])
+        printError(202,NULL,NULL);
+
     if(!strcmp("init\0", argv[1]))
         init();
     else if(!strcmp("config\0", argv[1]))
