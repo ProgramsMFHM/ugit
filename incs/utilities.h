@@ -12,5 +12,7 @@
 void flushInputBuffer();
 void trimNewline(char *str);
 char* dateToLocalString(time_t date);
+void printHelp();
+void commandHelp(char* command);
 
 #endif

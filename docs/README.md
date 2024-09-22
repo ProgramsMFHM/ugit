@@ -38,3 +38,44 @@ Se tiene la función `printError(int num, char* aux, char* obs)` que dependiendo
 | 302    | ID leído en el archivo de configuración no coincide con el tamaño esperado |
 | 303    | No se logró guardar archivos antiguos                                      |
 | 304    | No se logró eliminar el directorio <aux>                                   |
+
+## Documentación de comandos de ugit
+
+**Modo de uso:** `./ugit <comando> [<parámetro 1, parámetro 2, …>]`
+
+### Comandos disponibles:
+
+- **add <archivo1> <archivo2>...**
+  Agrega los archivos deseados al Staging Area. Puede recibir como parámetros nombres de varios archivos (separados por espacios) agregando varios al mismo tiempo al Staging Area.
+  Adicionalmente, es posible usar el carácter `*` de la misma manera que se usaría en la terminal para representar una cantidad indefinida de caracteres en una posición de una cadena.
+  Por ejemplo, `"add *.c"` agrega todos los archivos que terminen en `.c` al Staging Area.
+
+- **checkout <commit_ID>**
+  Lleva el directorio actual a su estado al momento de hacer el commit con el id: `commit_ID`.
+  Si no conoce el ID de un commit, basta con ejecutar el comando `log` para conocer el ID de cada uno de ellos.
+
+- **commit <"mensaje">**
+  Genera un commit con los datos del Staging Area.
+  El mensaje del commit tiene una longitud máxima de 256 caracteres.
+  No se puede ejecutar `commit` si el Staging Area está vacío.
+
+- **config**
+  Inicializa una configuración para un usuario.
+  Se pedirá un nombre de usuario (de máximo 40 caracteres) así como un correo electrónico (de máximo 35 caracteres).
+
+- **log**
+  Genera una lista de los commits realizados hasta el momento.
+  Podrás ver un indicador `(main)` que representa el último commit que se ha realizado, así como un indicador `(HEAD)` que representa el commit donde se encuentra la visualización actual del directorio.
+
+- **help [comando]**
+  Imprime información sobre el funcionamiento de los comandos en uGit.
+  Puedes indicar el nombre de un comando específico para conocer una descripción más completa de su funcionamiento.
+
+- **init**
+  Inicia un repositorio vacío en el directorio actual.
+  Si el repositorio existe, no podrá inicializarse de nuevo.
+  Se crean algunas carpetas y archivos que serán usados por el programa para su correcto funcionamiento; la eliminación de estos archivos podría corromper el funcionamiento de uGit.
+
+- **status**
+  Indica los archivos presentes en el Staging Area.
+  Los archivos que se encuentran en el Staging Area están en la versión en que se encontraban al momento de usar el comando `add`. Nuevas modificaciones deberán incluirse en el Staging Area antes de hacer `commit` si deseas que sean guardadas.

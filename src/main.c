@@ -14,7 +14,10 @@
 int main(int argc, char* argv[])
 {
     if(!argv[1])
-        printError(202,NULL,NULL);
+    {
+        printHelp();
+        return 0;
+    }
 
     if(!strcmp("init\0", argv[1]))
         init();
@@ -40,6 +43,13 @@ int main(int argc, char* argv[])
         checkout(argv[2]);
     else if(!strcmp("log\0", argv[1]))
         loggingCommits();
+    else if(!strcmp("help\0", argv[1]))
+    {
+        if(argv[2])
+            commandHelp(argv[2]);
+        else
+            printHelp();
+    }
     else
         printError(104, argv[1], NULL);
 
