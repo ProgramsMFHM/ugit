@@ -30,6 +30,7 @@ int addFiles(int argc, char* argv[]){
 
     for(int i=0; i<argc; i++)
     {
+	added = 0;
         duplicated = 0;
         if(!fileExists(argv[i]))
         {

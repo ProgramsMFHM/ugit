@@ -34,9 +34,6 @@ int main(int argc, char* argv[])
         case 0:
             printError(300, NULL, NULL);
             break;
-        case -1:
-            printError(101, ".ugit", "Ejecute el comando init");
-            break;
         }
     }
     else if(!strcmp("status\0", argv[1]))
