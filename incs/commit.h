@@ -1,15 +1,17 @@
 /// \file commit.h
 /// \brief Cabecera para commit.c
+/// \author Alan Almonacid y Milton Hernández
 #ifndef COMMIT
 #define COMMIT
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "user.h"
-#include "hash.h"
+
 #include "errors.h"
-#include "folders.h"
+#include "hash.h"
+#include "userConfig.h"
 #include "utilities.h"
 
 #define commitLenght 256
@@ -30,17 +32,17 @@ typedef struct _commitInfo commit;
 
 #include "list.h"
 
-void printCommit(commit commitInfo);
-
 void createCommit(char* message);
-
-void saveCommit(char* filename, commit commitInfo);
 
 int createCommitDir(commit commitInfo);
 
-int readCommit(FILE* logFile, commit* commitInfo);
+void saveCommit(char* filename, commit commitInfo);
 
 void loggingCommits();
+
+int readCommit(FILE* logFile, commit* commitInfo);
+
+void printCommit(commit commitInfo);
 
 unsigned int lastCommitId();
 
@@ -48,5 +50,4 @@ unsigned int headCommitId(int* position);
 
 void changeHeadCommit(unsigned int commitID);
 
-void checkout(char* commitString);
 #endif

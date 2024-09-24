@@ -1,5 +1,6 @@
 /// \file list.c
 /// \brief Funciones relacionadas a listas enlazadas simples, vistas en clase
+/// \author Alan Almonacid y Milton Hernández
 #include "list.h"
 
 /// @brief Estructura para manejar el uso de Listas Enlazadas Simples

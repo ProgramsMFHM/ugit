@@ -1,5 +1,6 @@
 /// \file errors.c
 /// \brief Manejo de errores
+/// \author Alan Almonacid y Milton Hernández
 #include "errors.h"
 
 /// @brief Envía un mensaje de error por consola

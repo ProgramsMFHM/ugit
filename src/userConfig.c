@@ -1,6 +1,7 @@
-/// \file user.c
+/// \file userConfig.c
 /// \brief Funciones al respecto de la creación de un usuario dentro del Ugit
-#include "user.h"
+/// \author Alan Almonacid y Milton Hernández
+#include "userConfig.h"
 
 /// @brief Inicializa el archivo de configuración del Ugit
 void userConfig()

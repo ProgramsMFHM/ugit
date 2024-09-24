@@ -1,4 +1,3 @@
-
 CC=gcc
 EXEC=ugit
 GRUPO=G1
@@ -29,6 +28,5 @@ clean:
 folders:
 	mkdir -p src obj incs build docs
 
-
-send:
-	tar czf $(GRUPO)-$(NTAR).tgz --transform 's,^,$(GRUPO)-$(NTAR)/,' Makefile src incs docs
+run:
+	@./build/${EXEC}

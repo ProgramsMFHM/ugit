@@ -1,15 +1,19 @@
 /// \file main.c
 /// \author Alan Almonacid y Milton Hernández
-/// \date 25 de Septiembre del 2024
+/// \date 24 de Septiembre del 2024
 /// \brief Archivo principal para el proyecto Ugit.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "stagingArea.h"
+#include "checkout.h"
 #include "commit.h"
 #include "errors.h"
-#include "folders.h"
 #include "hash.h"
-#include "user.h"
+#include "help.h"
+#include "init.h"
+#include "userConfig.h"
 
 int main(int argc, char* argv[])
 {

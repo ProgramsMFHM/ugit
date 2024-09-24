@@ -1,15 +1,16 @@
 /// \file hash.h
 /// \brief Cabecera para hash.c
+/// \author Alan Almonacid y Milton Hernández
 #ifndef HASH
 #define HASH
+
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "errors.h"
 
-// Funci ón de hash de Jenkins (One-at-a-time)
 unsigned int jenkinsHash (unsigned char *key, size_t len);
 
-// Funcion para leer el contenido de un archivo y calcular el hash
-unsigned int hashFile ( char *filename);
+unsigned int hashFile (char *filename);
 
 #endif

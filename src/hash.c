@@ -1,5 +1,6 @@
 /// \file hash.c
 /// \brief Funciones hash para hashear documentos y cadenas de texto
+/// \author Alan Almonacid y Milton Hernández
 #include "hash.h"
 
 /// @brief Función de hash de Jenkins (One-at-a-time)

@@ -1,22 +1,8 @@
-/// \file folders.c
-/// \brief Funciones relacionadas con manejo directorios y archivos
-#include"folders.h"
-
-/// @brief Esta función revisa la existencia de un directorio.
-/// @param folderName Cadena correspondiente al nombre del directorio a comprobar.
-/// @return 0 si el directorio existe, 1 en caso contrario.
-int folderExists(char *folderName) {
-    struct stat st;
-    return stat(folderName, &st);
-}
-
-/// @brief Esta función revisa la existencia de un archivo especifico.
-/// @param fileName Cadena correspondiente al nombre del archivo a comprobar.
-/// @return 0 si el archivo existe, 1 en caso contrario.
-int fileExists(char *fileName){
-    struct stat st;
-    return stat(fileName, &st);
-}
+/// \file stagingArea.c
+/// \brief Funciones relacionadas con el Manejo del stagingArea
+/// Se centra en el comando add
+/// \author Alan Almonacid y Milton Hernández
+#include "stagingArea.h"
 
 /// @brief Esta función agrega archivos al staging area.
 /// Esta función tiene en cuenta archivos duplicados para no volverlos a agregar al stage así como no poder agregar archivos si no han sido modificados desde su última agregación al StagingArea.
@@ -126,40 +112,4 @@ void stageStatus(){
         printf("\t%s\n",filename);
         fseek(stageFILE, 11, SEEK_CUR); // Saltamos el hash correspondiente al archivo filename
     }
-}
-
-void init()
-{
-    // Probamos si la carpeta de ugit existe
-    if(!folderExists(".ugit"))
-    {
-        printError(103, NULL, NULL);
-        return;
-    }
-    // Intentamos crear carpeta
-    if(system("mkdir .ugit"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos archivo de staging
-    if(system("touch .ugit/stagingArea.txt"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos carpeta para comits
-    if(system("mkdir ./.ugit/commits"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-    // Creamos archivo de log
-    if(system("touch .ugit/commits/log.txt"))
-    {
-        printError(113, ".ugit", NULL);
-        return;
-    }
-
-    printf("Carpeta .ugit creada con exito\n");
 }

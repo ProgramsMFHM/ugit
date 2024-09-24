@@ -1,10 +1,12 @@
-/// \file user.h
-/// \brief Cabecera para user.c
+/// \file userConfig.h
+/// \brief Cabecera para userConfig.c
+/// \author Alan Almonacid y Milton Hernández
 #ifndef USER
 #define USER
+
 #include <stdio.h>
 #include <string.h>
-#include "folders.h"
+
 #include "utilities.h"
 #include "errors.h"
 
