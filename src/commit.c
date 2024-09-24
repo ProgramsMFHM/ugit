@@ -240,7 +240,7 @@ unsigned int headCommitId(int* position)
         // Buscar si la línea contiene "nmainCommit"
         if (strncmp(lineBuffer, "headCommit: ", 12) == 0) {
             // Extraer el valor después del igual
-            if(snprintf(IDstring, 11, "%s", lineBuffer + 12) >= 11)
+            if(snprintf(IDstring, 11, "%s", lineBuffer + 12) > 11)
                 printError(302, NULL, NULL);
             trimNewline(IDstring);
             found = 1;
