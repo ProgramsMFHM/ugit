@@ -16,6 +16,7 @@ void printHelp(){
     printf("\t* help [comando]                 Imprime informacion sobre el funcionamiento de los comandos en uGit\n");
     printf("\t* init                           Inicia un repositorio vacio en el directorio actual\n");
     printf("\t* status                         Indica los archivos presentes en el Staging Area\n");
+    printf(ANSI_COLOR_RED"\n\n**ES RECOMENDABLE EJECUTAR ESTE PROGRAMA EN UN DIRECTORIO DEDICADO PARA EL MISMO (PUEDEN BORRARSE ARCHIVOS NO RASTREADOS POR UGIT)**\n\n"ANSI_COLOR_RESET);
 }
 
 /// @brief Imprime la documentación para un comando en especifico

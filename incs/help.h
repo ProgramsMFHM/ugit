@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "utilities.h"
+
 void printHelp();
 
 void commandHelp(char* command);

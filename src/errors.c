@@ -9,11 +9,11 @@
 /// @param obs Observación en caso de ser necesitada
 void printError(int num, char* aux, char* obs) {
     if(num>=200 && num<300)
-        printf("Fatal Error %d: ", num);
+        printf(ANSI_COLOR_RED "Fatal Error %d: " ANSI_COLOR_RESET, num);
     else if(num>=300 && num<400)
-        printf("Warning %d: ", num);
+        printf(ANSI_COLOR_MAGENTA "Warning %d: " ANSI_COLOR_RESET, num);
     else
-        printf("Error %d: ", num);
+        printf(ANSI_COLOR_RED "Error %d: " ANSI_COLOR_RESET, num);
 
     switch(num) {
         case 100:

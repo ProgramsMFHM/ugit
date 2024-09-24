@@ -133,10 +133,10 @@ void printCommit(commit commitInfo)
 
     //Comprobamos si el commit corresponde al main:
     if(commitInfo.ID == lastCommitId())
-        printf("(main) ");
+        printf(ANSI_COLOR_BLUE"(main) "ANSI_COLOR_RESET);
     //Comprobamos si el commit corresponde al head:
     if(commitInfo.ID == headCommitId(NULL))
-        printf("(HEAD) ");
+        printf(ANSI_COLOR_CYAN"(HEAD) "ANSI_COLOR_RESET);
 
     // Mostramos Commit
     printf("Commit %u:\n\tFecha: %s\n\tAutor: %s <%s>\n\tMensaje: %s\n\n",commitInfo.ID, dateString, commitInfo.autor.name, commitInfo.autor.mail, commitInfo.message);
