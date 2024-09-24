@@ -20,7 +20,7 @@ all: $(OBJ_FILES)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $^ $(INCLUDE)
 
-.PHONY: clean folders send
+.PHONY: clean folders
 clean:
 	rm -f $(OBJ_FILES)
 	rm -f build/$(EXEC)
@@ -30,3 +30,6 @@ folders:
 
 run:
 	@./build/${EXEC}
+
+doc:
+	doxygen

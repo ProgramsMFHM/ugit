@@ -81,3 +81,11 @@ Se tiene la función `printError(int num, char* aux, char* obs)` que dependiendo
 | 302    | ID leído en el archivo de configuración no coincide con el tamaño esperado |
 | 303    | No se logró guardar archivos antiguos                                      |
 | 304    | No se logró eliminar el directorio <aux>                                   |
+
+## Compilación del programa
+Para compilar el programa Ugit se recomienda ejecutar los siguientes comandos en la terminal:
+- `make folders` generará las carpetas necesarias para el correcto funcionamiento de la compilación del programa.
+- `make` Compilará el programa y dejará el ejecutable en la carpeta `build/` **Se recomienda entrar a esta carpeta cuando se deseen ejecutar comandos de Ugit**
+- `make run` Mostrará la documentación interna ugit, sin embargo, insistimos en la recomendación de entrar a la carpeta `build` y ejecutar en ella las llamadas al binario `ugit`
+- `make doc` Generará una documentación con [Doxygen](https://www.doxygen.nl/), que se presentará en la carpeta `docs/doxygen`, se recomienda abrir el archivo `docs/doxygen/html/index.html` para visualizar la documentación completa del programa.
+  - Alternativamente puede ejecutar `make` dentro de `docs/doxygen/latex/` para obtener un `refman.pdf` correspondiente a la documentación del proyecto en formato PDF.
