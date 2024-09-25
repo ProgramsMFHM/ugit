@@ -22,6 +22,8 @@ typedef struct _user
     char mail[mailLenght];
 } user;
 
+#include "commit.h"
+
 void userConfig();
 
 void getInfo(int lenght, char* dest, char* message);

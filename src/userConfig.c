@@ -23,7 +23,7 @@ void userConfig()
         return;
     }
 
-    fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,0);
+    fprintf(ugitFILE,"name: %s\nmail: %s\nheadCommit: %.10u",userInfo.name, userInfo.mail,lastCommitId());
     fclose(ugitFILE);
     printf("Usuario iniciado almacenado con exito.\n");
 }
